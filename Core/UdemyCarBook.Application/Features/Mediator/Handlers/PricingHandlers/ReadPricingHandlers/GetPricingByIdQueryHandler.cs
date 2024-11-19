@@ -1,0 +1,38 @@
+﻿using MediatR;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using UdemyCarBook.Application.Pricings.Mediator.Queries.PricingQueries;
+using UdemyCarBook.Application.Pricings.Mediator.Results;
+using UdemyCarBook.Application.Interfaces;
+using UdemyCarBook.Domain.Entities;
+using UdemyCarBook.Application.Features.Mediator.Results;
+
+namespace UdemyCarBook.Application.Pricings.Mediator.Handlers.PricingHandlers.ReadPricingHandlers
+{
+    public class GetPricingByIdQueryHandler : IRequestHandler<GetPricingByIdQuery, GetPricingByIdQueryResults>
+    {
+        private readonly IRepository<Pricing> _repository;
+
+        public GetPricingByIdQueryHandler(IRepository<Pricing> repository)
+        {
+            _repository = repository;
+        }
+
+        public async Task<GetPricingByIdQueryResults> Handle(GetPricingByIdQuery request, CancellationToken cancellationToken)
+        {
+    
+                var values = await _repository.GetByIdAsync(request.Id);
+                return new GetPricingByIdQueryResults
+                {
+                    PricingID = values.PricingID,
+                    Name = values.Name,
+               
+
+                };
+            
+        }
+    }
+}

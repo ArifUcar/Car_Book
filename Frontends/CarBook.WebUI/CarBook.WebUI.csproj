@@ -1,0 +1,79 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="wwwroot\CarBook-master\.vs\CarBook-master\v17\DocumentLayout.json" />
+    <Content Include="wwwroot\CarBook-master\.vs\CarBook\v17\DocumentLayout.backup.json" />
+    <Content Include="wwwroot\CarBook-master\.vs\CarBook\v17\DocumentLayout.json" />
+    <Content Include="wwwroot\CarBook-master\.vs\ProjectSettings.json" />
+    <Content Include="wwwroot\CarBook-master\.vs\VSWorkspaceState.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\CarBook-master\.DS_Store" />
+    <None Include="wwwroot\CarBook-master\.vs\CarBook-master\FileContentIndex\33bed7ff-a96b-4ef4-a038-f7eebde6bfba.vsidx" />
+    <None Include="wwwroot\CarBook-master\.vs\CarBook\DesignTimeBuild\.dtbcache.v2" />
+    <None Include="wwwroot\CarBook-master\.vs\CarBook\FileContentIndex\a4f933df-0207-442a-b47a-9f5e8c0ef1a9.vsidx" />
+    <None Include="wwwroot\CarBook-master\.vs\CarBook\v17\.futdcache.v2" />
+    <None Include="wwwroot\CarBook-master\.vs\ProjectEvaluation\carbook.metadata.v9.bin" />
+    <None Include="wwwroot\CarBook-master\.vs\ProjectEvaluation\carbook.projects.v9.bin" />
+    <None Include="wwwroot\CarBook-master\.vs\ProjectEvaluation\carbook.strings.v9.bin" />
+    <None Include="wwwroot\CarBook-master\.vs\slnx.sqlite" />
+    <None Include="wwwroot\CarBook-master\CarBook.sln" />
+    <None Include="wwwroot\CarBook-master\Core\CarBook.Application\CarBook.Application.csproj" />
+    <None Include="wwwroot\CarBook-master\Core\CarBookDomain\CarBook.Domain.csproj" />
+    <None Include="wwwroot\CarBook-master\css\.DS_Store" />
+    <None Include="wwwroot\CarBook-master\css\bootstrap\.DS_Store" />
+    <None Include="wwwroot\CarBook-master\css\css\.DS_Store" />
+    <None Include="wwwroot\CarBook-master\fonts\.DS_Store" />
+    <None Include="wwwroot\CarBook-master\fonts\flaticon\.DS_Store" />
+    <None Include="wwwroot\CarBook-master\fonts\flaticon\font\.DS_Store" />
+    <None Include="wwwroot\CarBook-master\fonts\ionicons\fonts\.DS_Store" />
+    <None Include="wwwroot\CarBook-master\images\.DS_Store" />
+    <None Include="wwwroot\CarBook-master\Infrastructure\UdemyCarBook.Persistence\CarBook.Persistence.csproj" />
+    <None Include="wwwroot\CarBook-master\js\.DS_Store" />
+    <None Include="wwwroot\CarBook-master\Presentation\CarBook.WebApi\CarBook.WebApi.csproj" />
+    <None Include="wwwroot\CarBook-master\Presentation\CarBook.WebApi\CarBook.WebApi.csproj.user" />
+    <None Include="wwwroot\CarBook-master\scss\.DS_Store" />
+    <None Include="wwwroot\CarBook-master\scss\bootstrap\.DS_Store" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\CarBook-master\Core\CarBook.Application\bin\Debug\net8.0\" />
+    <Folder Include="wwwroot\CarBook-master\Core\CarBook.Application\bin\Release\net8.0\" />
+    <Folder Include="wwwroot\CarBook-master\Core\CarBook.Application\obj\Debug\net8.0\refint\" />
+    <Folder Include="wwwroot\CarBook-master\Core\CarBook.Application\obj\Debug\net8.0\ref\" />
+    <Folder Include="wwwroot\CarBook-master\Core\CarBook.Application\obj\Release\net8.0\refint\" />
+    <Folder Include="wwwroot\CarBook-master\Core\CarBook.Application\obj\Release\net8.0\ref\" />
+    <Folder Include="wwwroot\CarBook-master\Core\CarBookDomain\bin\Release\net8.0\" />
+    <Folder Include="wwwroot\CarBook-master\Core\CarBookDomain\obj\Release\net8.0\refint\" />
+    <Folder Include="wwwroot\CarBook-master\Core\CarBookDomain\obj\Release\net8.0\ref\" />
+    <Folder Include="wwwroot\CarBook-master\Infrastructure\UdemyCarBook.Persistence\bin\Debug\net8.0\" />
+    <Folder Include="wwwroot\CarBook-master\Infrastructure\UdemyCarBook.Persistence\bin\Release\net8.0\" />
+    <Folder Include="wwwroot\CarBook-master\Infrastructure\UdemyCarBook.Persistence\obj\Debug\net8.0\refint\" />
+    <Folder Include="wwwroot\CarBook-master\Infrastructure\UdemyCarBook.Persistence\obj\Debug\net8.0\ref\" />
+    <Folder Include="wwwroot\CarBook-master\Infrastructure\UdemyCarBook.Persistence\obj\Release\net8.0\refint\" />
+    <Folder Include="wwwroot\CarBook-master\Infrastructure\UdemyCarBook.Persistence\obj\Release\net8.0\ref\" />
+    <Folder Include="wwwroot\CarBook-master\Presentation\CarBook.WebApi\bin\Debug\net8.0\" />
+    <Folder Include="wwwroot\CarBook-master\Presentation\CarBook.WebApi\bin\Release\net8.0\" />
+    <Folder Include="wwwroot\CarBook-master\Presentation\CarBook.WebApi\obj\Debug\net8.0\refint\" />
+    <Folder Include="wwwroot\CarBook-master\Presentation\CarBook.WebApi\obj\Debug\net8.0\ref\" />
+    <Folder Include="wwwroot\CarBook-master\Presentation\CarBook.WebApi\obj\Debug\net8.0\staticwebassets\" />
+    <Folder Include="wwwroot\CarBook-master\Presentation\CarBook.WebApi\obj\Release\net8.0\refint\" />
+    <Folder Include="wwwroot\CarBook-master\Presentation\CarBook.WebApi\obj\Release\net8.0\ref\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CarBook.Dto\CarBook.Dto.csproj" />
+  </ItemGroup>
+
+</Project>
