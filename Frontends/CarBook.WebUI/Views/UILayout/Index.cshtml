@@ -1,16 +1,15 @@
 ﻿
-@{
-    Layout = null;
-}
 <!DOCTYPE html>
 <html lang="en">
+
 
 @await Component.InvokeAsync("_HeadUILayoutComponentPartials")
 <body>
     @await Component.InvokeAsync("_NavbarUILayoutComponentPartials")
     @await Component.InvokeAsync("_MainCoverUILayoutComponentPartials")
     @RenderBody()
-    @await Component.InvokeAsync("_FooterUILayoutComponentPartials")
+
     @await Component.InvokeAsync("_ScriptUILayoutComponentPartials")
+    @await Component.InvokeAsync("_FooterUILayoutComponentPartials")
 </body>
 </html>

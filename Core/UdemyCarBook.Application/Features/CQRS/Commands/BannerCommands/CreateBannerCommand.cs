@@ -9,10 +9,10 @@ namespace UdemyCarBook.Application.Features.CQRS.Commands.BannerCommand
     public class CreateBannerCommand
     {
        
-        public int Title { get; set; }
-        public int Description { get; set; }
-        public int VideoDescription { get; set; }
-        public int VideoURL { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string VideoDescription { get; set; }
+        public string VideoURL { get; set; }
 
     }
 }

@@ -44,6 +44,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="ViewComponents\BlogViewComponents\" />
     <Folder Include="wwwroot\CarBook-master\Core\CarBook.Application\bin\Debug\net8.0\" />
     <Folder Include="wwwroot\CarBook-master\Core\CarBook.Application\bin\Release\net8.0\" />
     <Folder Include="wwwroot\CarBook-master\Core\CarBook.Application\obj\Debug\net8.0\refint\" />

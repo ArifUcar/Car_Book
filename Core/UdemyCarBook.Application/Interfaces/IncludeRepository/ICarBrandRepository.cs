@@ -10,5 +10,6 @@ namespace UdemyCarBook.Application.Interfaces.IncludeRepository
     public interface ICarBrandRepository
     {
         Task<List<Car>> GetCarsListWithBrandAsync();
+        Task<List<Car>> GetLast5CarsListWithBrandAsync();
     }
 }
