@@ -26,8 +26,9 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.BlogHandlers.ReadB
             var values = await _repository.GetByIdAsync(request.Id);
             return new GetBlogByIdQueryResults {
             BlogId=values.BlogId,
-            Title=values.Title
-            };
+            Title=values.Title,
+            Description=values.Description,
+    };
         }
     }
     }

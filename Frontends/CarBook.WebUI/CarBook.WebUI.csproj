@@ -35,16 +35,12 @@
     <None Include="wwwroot\CarBook-master\fonts\flaticon\font\.DS_Store" />
     <None Include="wwwroot\CarBook-master\fonts\ionicons\fonts\.DS_Store" />
     <None Include="wwwroot\CarBook-master\images\.DS_Store" />
-    <None Include="wwwroot\CarBook-master\Infrastructure\UdemyCarBook.Persistence\CarBook.Persistence.csproj" />
     <None Include="wwwroot\CarBook-master\js\.DS_Store" />
-    <None Include="wwwroot\CarBook-master\Presentation\CarBook.WebApi\CarBook.WebApi.csproj" />
-    <None Include="wwwroot\CarBook-master\Presentation\CarBook.WebApi\CarBook.WebApi.csproj.user" />
     <None Include="wwwroot\CarBook-master\scss\.DS_Store" />
     <None Include="wwwroot\CarBook-master\scss\bootstrap\.DS_Store" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ViewComponents\BlogViewComponents\" />
     <Folder Include="wwwroot\CarBook-master\Core\CarBook.Application\bin\Debug\net8.0\" />
     <Folder Include="wwwroot\CarBook-master\Core\CarBook.Application\bin\Release\net8.0\" />
     <Folder Include="wwwroot\CarBook-master\Core\CarBook.Application\obj\Debug\net8.0\refint\" />
@@ -54,19 +50,6 @@
     <Folder Include="wwwroot\CarBook-master\Core\CarBookDomain\bin\Release\net8.0\" />
     <Folder Include="wwwroot\CarBook-master\Core\CarBookDomain\obj\Release\net8.0\refint\" />
     <Folder Include="wwwroot\CarBook-master\Core\CarBookDomain\obj\Release\net8.0\ref\" />
-    <Folder Include="wwwroot\CarBook-master\Infrastructure\UdemyCarBook.Persistence\bin\Debug\net8.0\" />
-    <Folder Include="wwwroot\CarBook-master\Infrastructure\UdemyCarBook.Persistence\bin\Release\net8.0\" />
-    <Folder Include="wwwroot\CarBook-master\Infrastructure\UdemyCarBook.Persistence\obj\Debug\net8.0\refint\" />
-    <Folder Include="wwwroot\CarBook-master\Infrastructure\UdemyCarBook.Persistence\obj\Debug\net8.0\ref\" />
-    <Folder Include="wwwroot\CarBook-master\Infrastructure\UdemyCarBook.Persistence\obj\Release\net8.0\refint\" />
-    <Folder Include="wwwroot\CarBook-master\Infrastructure\UdemyCarBook.Persistence\obj\Release\net8.0\ref\" />
-    <Folder Include="wwwroot\CarBook-master\Presentation\CarBook.WebApi\bin\Debug\net8.0\" />
-    <Folder Include="wwwroot\CarBook-master\Presentation\CarBook.WebApi\bin\Release\net8.0\" />
-    <Folder Include="wwwroot\CarBook-master\Presentation\CarBook.WebApi\obj\Debug\net8.0\refint\" />
-    <Folder Include="wwwroot\CarBook-master\Presentation\CarBook.WebApi\obj\Debug\net8.0\ref\" />
-    <Folder Include="wwwroot\CarBook-master\Presentation\CarBook.WebApi\obj\Debug\net8.0\staticwebassets\" />
-    <Folder Include="wwwroot\CarBook-master\Presentation\CarBook.WebApi\obj\Release\net8.0\refint\" />
-    <Folder Include="wwwroot\CarBook-master\Presentation\CarBook.WebApi\obj\Release\net8.0\ref\" />
   </ItemGroup>
 
   <ItemGroup>

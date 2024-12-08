@@ -13,5 +13,6 @@ namespace UdemyCarBook.Domain.Entities
 
         public List<CarPricing> CarPricings { get; set; }
 
+
     } 
 }

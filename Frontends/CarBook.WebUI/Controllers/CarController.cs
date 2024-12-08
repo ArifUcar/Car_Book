@@ -1,4 +1,5 @@
 ﻿using CarBook.Dto.CarDtos;
+using CarBook.Dto.CarPricingDtos;
 using CarBook.Dto.ServiceDtos;
 using CarBook.WebUI.Environments;
 using Microsoft.AspNetCore.Mvc;
@@ -22,12 +23,12 @@ namespace CarBook.WebUI.Controllers
 
 
             var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.GetAsync(apiUrl + endpoint+"/GetCarWithBrand");
+            var responseMessage = await client.GetAsync(apiUrl + endpoint+ "/GetCarWithPricing");
 
             if (responseMessage.IsSuccessStatusCode)
             {
                 var jsonData = await responseMessage.Content.ReadAsStringAsync();
-                var values = JsonConvert.DeserializeObject<List<ResultCarWithBrandDtos>>(jsonData);
+                var values = JsonConvert.DeserializeObject<List<ResultCarPricingWithCarDtos>>(jsonData);
                 return View(values);
             }
 

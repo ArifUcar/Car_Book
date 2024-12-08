@@ -26,6 +26,7 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.BlogHandlers.ReadB
             return values.Select(x=> new GetBlogQueryResults {
             BlogId=x.BlogId,
             Title=x.Title,
+            Description=x.Description,
             }).ToList();
         }
     }

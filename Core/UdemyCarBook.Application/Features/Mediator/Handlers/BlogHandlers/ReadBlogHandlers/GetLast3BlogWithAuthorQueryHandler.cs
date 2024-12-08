@@ -7,9 +7,9 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.BlogHandlers.ReadB
 {
     public class GetLast3BlogWithAuthorQueryHandler : IRequestHandler<GetLast3BlogWithAuthorQuery, List<GetLast3BlogWithAuthorQueryResults>>
     {
-        private readonly IBlogAuthorRepository _repository;
+        private readonly IBlogRepository _repository;
 
-        public GetLast3BlogWithAuthorQueryHandler(IBlogAuthorRepository repository)
+        public GetLast3BlogWithAuthorQueryHandler(IBlogRepository repository)
         {
             _repository = repository;
         }

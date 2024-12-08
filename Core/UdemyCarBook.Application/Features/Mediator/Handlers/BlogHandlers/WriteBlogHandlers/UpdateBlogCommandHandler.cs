@@ -28,6 +28,7 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.BlogHandlers.Write
             values.CategoryId= request.CategoryId;
             values.CategoryId = request.CategoryId;
             values.CreatedDate = request.CreatedDate;
+            values.Description = request.Description;
                 await _repository.UpdateAsync(values);
          
         }

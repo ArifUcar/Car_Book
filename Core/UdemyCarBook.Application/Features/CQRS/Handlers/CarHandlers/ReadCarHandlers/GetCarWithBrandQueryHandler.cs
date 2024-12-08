@@ -13,9 +13,9 @@ namespace UdemyCarBook.Application.Features.CQRS.Handlers.CarHandlers.ReadCarHan
 {
     public class GetCarWithBrandQueryHandler
     {
-        private readonly ICarBrandRepository _repository;
+        private readonly ICarRepository _repository;
 
-        public GetCarWithBrandQueryHandler(ICarBrandRepository repository)
+        public GetCarWithBrandQueryHandler(ICarRepository repository)
         {
             _repository = repository;
         }
