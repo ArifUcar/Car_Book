@@ -27,6 +27,7 @@ namespace UdemyCarBook.Application.Services.Mediator.Handlers.ServiceHandlers.Wr
             values.ServiceID = request.ServiceID;
             values.Title=request.Title;
             values.Description=request.Description;
+            values.IconUrl = request.IconUrl; 
             
             await _repository.UpdateAsync(values);
             

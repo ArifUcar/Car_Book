@@ -12,7 +12,7 @@ namespace UdemyCarBook.Persistance.Context
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("server=DESKTOP-I79O76V;initial Catalog=CarBook;integrated security=true;TrustServerCertificate=True"
+            optionsBuilder.UseSqlServer("server=DESKTOP-I79O76V;initial Catalog=CarBook1;integrated security=true;TrustServerCertificate=True"
 );
 
 
@@ -36,6 +36,8 @@ namespace UdemyCarBook.Persistance.Context
         public DbSet<Testimonial> Testimonials { get; set; }
         public DbSet<Author> Authors { get; set; }
         public DbSet<Blog> Blogs { get; set; }
+        public DbSet<TagCloud> TagsClouds { get; set; }
+
 
 
 
