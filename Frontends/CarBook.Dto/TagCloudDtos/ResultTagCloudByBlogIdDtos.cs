@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UdemyCarBook.Domain.Entities
+namespace CarBook.Dto.TagCloudDtos
 {
-    public class TagCloud
+    public class ResultTagCloudByBlogIdDtos
     {
         public int TagCloudID { get; set; }
         public string TagCloudTitle { get; set; }
         public int BlogId { get; set; }
-        public Blog Blog { get; set; }
     }
 }

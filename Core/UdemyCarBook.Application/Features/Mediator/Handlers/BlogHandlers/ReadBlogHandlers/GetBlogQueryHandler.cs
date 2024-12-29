@@ -27,6 +27,9 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.BlogHandlers.ReadB
             BlogId=x.BlogId,
             Title=x.Title,
             Description=x.Description,
+            CoverImageUrl=x.CoverImageUrl  ,
+            AuthorId=x.AuthorId,
+            CategoryId=x.CategoryId
             }).ToList();
         }
     }

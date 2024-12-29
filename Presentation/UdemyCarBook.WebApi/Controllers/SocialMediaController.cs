@@ -18,7 +18,7 @@ namespace UdemyCarBook.WebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> FooterList()
+        public async Task<IActionResult> SocialMediaList()
         {
             var values = await _mediator.Send(new GetSocialMediaQuery());
             return Ok(values);

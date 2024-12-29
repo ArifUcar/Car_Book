@@ -29,5 +29,11 @@ namespace UdemyCarBook.Persistance.Repositories.IncludeRepostiries
             var values = await _context.Blogs.Include(x => x.Author).Include(y => y.Category).ToListAsync();
             return values;
         }
+
+        public async Task<List<Blog>> GetBlogByAuthorIdAsync(int id)
+        {
+            var values = await _context.Blogs.Include(x => x.Author).Where(y => y.BlogId == id).ToListAsync();
+            return values;
+        }
     }
 }

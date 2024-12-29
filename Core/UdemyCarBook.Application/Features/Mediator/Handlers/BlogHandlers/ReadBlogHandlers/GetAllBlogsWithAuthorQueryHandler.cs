@@ -34,6 +34,7 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.BlogHandlers.ReadB
                 Title=x.Title,
                 AuthorDescription=x.Author.Description,
                 BlogDescription=x.Description,
+                AuthorImageUrl=x.Author.ImageUrl
 
                 
             }).ToList();

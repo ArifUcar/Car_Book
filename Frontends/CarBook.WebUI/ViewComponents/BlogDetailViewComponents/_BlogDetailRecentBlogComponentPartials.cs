@@ -14,9 +14,9 @@ namespace CarBook.WebUI.ViewComponents.BlogDetailViewComponents
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<IViewComponentResult> InvokeAsync()
+        public async Task<IViewComponentResult> InvokeAsync(int id)
         {
-
+            ViewBag.blogid = id;
             string apiUrl = EnvironmentDevelopment.ApiUrl;
             string endpoint = "Blog";
 

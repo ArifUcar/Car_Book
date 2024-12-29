@@ -7,10 +7,8 @@ using UdemyCarBook.Domain.Entities;
 
 namespace UdemyCarBook.Application.Interfaces.IncludeRepository
 {
-    public interface IBlogRepository
+   public interface ITagCloudRepository
     {
-        Task<List<Blog>> GetLast3BlogsListWithAuthorAsync();
-        Task<List<Blog>> GetAllBlogsListWithAuthorAsync();
-        Task<List<Blog>> GetBlogByAuthorIdAsync(int id);
+        Task<List<TagCloud>> GetTagCloudByBlogID(int id);
     }
 }
