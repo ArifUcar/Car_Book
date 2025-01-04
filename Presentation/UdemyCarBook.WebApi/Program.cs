@@ -18,11 +18,16 @@ using UdemyCarBook.Persistance.Context;
 using UdemyCarBook.Persistance.Repositories;
 using UdemyCarBook.Persistance.Repositories.IncludeRepostiries;
 using UdemyCarBook.Application.Services;
+using Scrutor;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+
+
+
 builder.Services.AddScoped<CarBookContext>();
+
+
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped(typeof(ICarRepository), typeof(CarRepository));
 builder.Services.AddScoped(typeof(IBlogRepository), typeof(BlogRepository));
