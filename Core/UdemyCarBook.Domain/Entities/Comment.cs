@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UdemyCarBook.Domain.Base;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace UdemyCarBook.Domain.Entities
 {
@@ -41,5 +42,17 @@ namespace UdemyCarBook.Domain.Entities
         public Guid? ParentCommentId { get; set; }
         public virtual Comment? ParentComment { get; set; }
         public virtual ICollection<Comment> Replies { get; set; }
+
+        /// <summary>
+        /// Yorumu oluşturan kullanıcı
+        /// </summary>
+        [ForeignKey("CreatedById")]
+        public virtual User CreatedByUser { get; set; }
+
+        /// <summary>
+        /// Son güncelleyen kullanıcı
+        /// </summary>
+        [ForeignKey("UpdatedById")]
+        public virtual User LastModifiedByUser { get; set; }
     }
 }

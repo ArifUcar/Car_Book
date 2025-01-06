@@ -21,7 +21,7 @@ namespace UdemyCarBook.Domain.Base
         /// <summary>
         /// Oluşturulma zamanı
         /// </summary>
-        public DateTime CreationTime { get; set; }
+        public DateTime CreatedDate { get; set; }
 
         /// <summary>
         /// Oluşturan kullanıcı
@@ -30,7 +30,7 @@ namespace UdemyCarBook.Domain.Base
 
         /// <summary>
         /// Son değişiklik zamanı
-        /// </summary>
+        /// </summary>                
         public DateTime? UpdateTime { get; set; }
 
         /// <summary>
