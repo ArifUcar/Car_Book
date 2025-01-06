@@ -13,10 +13,12 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.AboutHandlers.Writ
     public class UpdateAboutCommandHandler :IRequestHandler<UpdateAboutCommand>
     {
         private readonly IRepository<About> _repository;
+        private readonly ILogRepository _logService;
 
-        public UpdateAboutCommandHandler(IRepository<About> repository)
+        public UpdateAboutCommandHandler(IRepository<About> repository, ILogRepository logService)
         {
             _repository = repository;
+            _logService = logService;
         }
         public async Task Handle(UpdateAboutCommand request, CancellationToken cancellationToken)
         {
@@ -26,6 +28,13 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.AboutHandlers.Writ
             values.Title = request.Title;
             
             await _repository.UpdateAsync(values);
+
+            await _logService.CreateLog(
+                "About Güncelleme",
+                $"'{request.Title}' başlıklı about güncellendi",
+                "Update",
+                "About"
+            );
         }
     }
 }

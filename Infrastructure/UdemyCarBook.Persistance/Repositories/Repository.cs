@@ -12,10 +12,12 @@ namespace UdemyCarBook.Persistance.Repositories
     public class Repository<T> : IRepository<T> where T : class
     {
         private readonly NewsContext _context;
+        private readonly DbSet<T> _dbSet;
 
         public Repository(NewsContext context)
         {
             _context = context;
+            _dbSet = context.Set<T>();  // Constructor'da initialize ediyoruz
         }
          
         public async Task CreateAsync(T entity)
@@ -46,6 +48,20 @@ namespace UdemyCarBook.Persistance.Repositories
         public async Task<T> GetByIdAsync(Guid id)
         {
             return await _context.Set<T>().FindAsync(id);
+        }
+
+        public async Task SoftDeleteAsync(Guid id)
+        {
+            var entity = await _dbSet.FindAsync(id);
+            if (entity != null)
+            {
+                var property = entity.GetType().GetProperty("IsDeleted");
+                if (property != null)
+                {
+                    property.SetValue(entity, true);
+                    await _context.SaveChangesAsync();
+                }
+            }
         }
     }
 }

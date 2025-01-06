@@ -23,13 +23,14 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.AboutHandlers.Read
         public async Task<List<GetAboutQueryResult>> Handle(GetAboutQuery request, CancellationToken cancellationToken)
         {
             var values = await _repository.GetAllAsync();
-            return values.Select(x => new GetAboutQueryResult
-            {
-                Id = x.Id,
-                Title = x.Title,
-                Description = x.Description,
-                ImageUrl = x.ImageUrl,
-            }).ToList();
+            return values.Where(x => !x.IsDeleted)
+                         .Select(x => new GetAboutQueryResult
+                         {
+                             Id = x.Id,
+                             Title = x.Title,
+                             Description = x.Description,
+                             ImageUrl = x.ImageUrl,
+                         }).ToList();
         }
     }
 }

@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 
-
+builder.Services.AddScoped<ILogRepository, LogRepository>();
 builder.Services.AddScoped<NewsContext>();
 
 

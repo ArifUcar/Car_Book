@@ -47,5 +47,11 @@ namespace UdemyCarBook.WebApi.Controllers
             await _mediator.Send(command);
             return Ok("FooterAddress başarıyla silindi");
         }
+        [HttpDelete("SoftDelete/{id}")]
+        public async Task<IActionResult> SoftDelete(Guid id)
+        {
+            await _mediator.Send(new SoftDeleteAboutCommand { Id = id });
+            return Ok("Kayıt başarıyla soft delete edildi");
+        }
     }
 }

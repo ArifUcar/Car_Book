@@ -33,6 +33,7 @@ namespace UdemyCarBook.Persistance.Context
         public DbSet<Contact> Contacts { get; set; }
         public DbSet<Author> Authors { get; set; }
         public DbSet<Tag> Tags { get; set; }
+        public DbSet<Log> Logs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
