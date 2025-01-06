@@ -23,4 +23,8 @@
     <ProjectReference Include="..\..\Infrastructure\UdemyCarBook.Persistance\UdemyCarBook.Persistance.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+
 </Project>

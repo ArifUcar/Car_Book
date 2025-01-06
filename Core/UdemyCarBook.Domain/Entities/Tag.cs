@@ -7,25 +7,15 @@ using UdemyCarBook.Domain.Base;
 
 namespace UdemyCarBook.Domain.Entities
 {
-    public class Category : BaseEntity
+    public class Tag : BaseEntity
     {
         /// <summary>
-        /// Kategori adı
+        /// Etiket adı
         /// </summary>
         public string Name { get; set; }
 
         /// <summary>
-        /// Kategori açıklaması
-        /// </summary>
-        public string Description { get; set; }
-
-        /// <summary>
-        /// Kategori ikonu/görseli
-        /// </summary>
-        public string? IconUrl { get; set; }
-
-        /// <summary>
-        /// Bu kategorideki haberler
+        /// Etiketin bağlı olduğu haberler
         /// </summary>
         public virtual ICollection<News> News { get; set; }
     }

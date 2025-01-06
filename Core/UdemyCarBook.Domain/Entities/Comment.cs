@@ -1,0 +1,45 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using UdemyCarBook.Domain.Base;
+
+namespace UdemyCarBook.Domain.Entities
+{
+    public class Comment : BaseEntity
+    {
+        /// <summary>
+        /// Yorum içeriği
+        /// </summary>
+        public string Content { get; set; }
+
+        /// <summary>
+        /// Yorum yapan kullanıcı adı
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Yorum yapan email
+        /// </summary>
+        public string Email { get; set; }
+
+        /// <summary>
+        /// Yorumun onay durumu
+        /// </summary>
+        public bool IsApproved { get; set; }
+
+        /// <summary>
+        /// İlişkili haber
+        /// </summary>
+        public Guid NewsId { get; set; }
+        public virtual News News { get; set; }
+
+        /// <summary>
+        /// Üst yoruma bağlı alt yorumlar için
+        /// </summary>
+        public Guid? ParentCommentId { get; set; }
+        public virtual Comment? ParentComment { get; set; }
+        public virtual ICollection<Comment> Replies { get; set; }
+    }
+}

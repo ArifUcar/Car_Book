@@ -7,26 +7,26 @@ using UdemyCarBook.Domain.Base;
 
 namespace UdemyCarBook.Domain.Entities
 {
-    public class Category : BaseEntity
+    public class Newsletter : BaseEntity
     {
         /// <summary>
-        /// Kategori adı
+        /// Abone email adresi
         /// </summary>
-        public string Name { get; set; }
+        public string Email { get; set; }
 
         /// <summary>
-        /// Kategori açıklaması
+        /// Abonelik durumu
         /// </summary>
-        public string Description { get; set; }
+        public bool IsActive { get; set; }
 
         /// <summary>
-        /// Kategori ikonu/görseli
+        /// Abonelik tarihi
         /// </summary>
-        public string? IconUrl { get; set; }
+        public DateTime SubscriptionDate { get; set; }
 
         /// <summary>
-        /// Bu kategorideki haberler
+        /// Abonelik iptal tarihi
         /// </summary>
-        public virtual ICollection<News> News { get; set; }
+        public DateTime? UnsubscribeDate { get; set; }
     }
 }

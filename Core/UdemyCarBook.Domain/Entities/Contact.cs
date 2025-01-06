@@ -1,18 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using UdemyCarBook.Domain.Base;
 
-namespace UdemyCarBook.Domain.Entities
+public class Contact : BaseEntity
 {
-    public class Contact
-    {
-        public int ContactID { get; set; }
-        public string Name { get; set; }
-        public string Email { get; set; }
-        public string Subject { get; set; }
-        public string Message { get; set; }
-        public DateTime SendDate { get; set; }
-    }
-}
+    /// <summary>
+    /// İletişim kuran kişinin adı
+    /// </summary>
+    public string Name { get; set; }
+
+    /// <summary>
+    /// Email adresi
+    /// </summary>
+    public string Email { get; set; }
+
+    /// <summary>
+    /// Konu
+    /// </summary>
+    public string Subject { get; set; }
+
+    /// <summary>
+    /// Mesaj içeriği
+    /// </summary>
+    public string Message { get; set; }
+
+    /// <summary>
+    /// Mesajın okunma durumu
+    /// </summary>
+    public bool IsRead { get; set; }
+
+    /// <summary>
+    /// Mesajın yanıtlanma durumu
+    /// </summary>
+    public bool IsReplied { get; set; }
+
+    /// <summary>
+    /// Yanıt tarihi
+    /// </summary>
+    public DateTime? ReplyDate { get; set; }
+
+    /// <summary>
+    /// Yanıt içeriği
+    /// </summary>
+    public string? ReplyMessage { get; set; }
+} 

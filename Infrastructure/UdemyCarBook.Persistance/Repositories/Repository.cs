@@ -11,9 +11,9 @@ namespace UdemyCarBook.Persistance.Repositories
 {
     public class Repository<T> : IRepository<T> where T : class
     {
-        private readonly CarBookContext _context;
+        private readonly NewsContext _context;
 
-        public Repository(CarBookContext context)
+        public Repository(NewsContext context)
         {
             _context = context;
         }
