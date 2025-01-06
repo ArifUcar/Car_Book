@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UdemyCarBook.Domain.Base;
 using UdemyCarBook.Domain.Entities;
 
 namespace UdemyCarBook.Persistance.Context
@@ -19,6 +20,7 @@ namespace UdemyCarBook.Persistance.Context
             .LogTo(Console.WriteLine, Microsoft.Extensions.Logging.LogLevel.Information);
         }
 
+        public DbSet<BaseHistory> Histories { get; set; }
         public DbSet<About> Abouts { get; set; }
 
         public DbSet<Category> Categories { get; set; }
@@ -37,6 +39,25 @@ namespace UdemyCarBook.Persistance.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Log>(entity =>
+            {
+                entity.Property(e => e.Id)
+                    .HasColumnType("char(36)")
+                    .HasCharSet("ascii")
+                    .HasCollation("ascii_general_ci");
+            });
+            modelBuilder.Entity<BaseHistory>(entity =>
+            {
+                entity.Property(e => e.Id)
+                    .HasColumnType("char(36)")
+                    .HasCharSet("ascii")
+                    .HasCollation("ascii_general_ci");
+
+                entity.Property(e => e.EntityId)
+                    .HasColumnType("char(36)")
+                    .HasCharSet("ascii")
+                    .HasCollation("ascii_general_ci");
+            });
             modelBuilder.Entity<News>()
                 .HasMany(n => n.Tags)
                 .WithMany(t => t.News)

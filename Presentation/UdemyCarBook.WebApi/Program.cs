@@ -4,12 +4,16 @@ using UdemyCarBook.Persistance.Context;
 using UdemyCarBook.Persistance.Repositories;
 using UdemyCarBook.Application.Services;
 using Scrutor;
+using UdemyCarBook.Persistance.Service;
+using UdemyCarBook.Application.Interfaces.IService;
+using UdemyCarBook.WebApi.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
 
-builder.Services.AddScoped<ILogRepository, LogRepository>();
+builder.Services.AddScoped<ILogService, LogService>();
+builder.Services.AddScoped<IHistoryService, HistoryService>();
 builder.Services.AddScoped<NewsContext>();
 
 
@@ -42,7 +46,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseExceptionMiddleware();
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
