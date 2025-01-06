@@ -11,22 +11,14 @@ namespace UdemyCarBook.Persistance.Context
 {
     public class NewsContext : DbContext
     {
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public NewsContext(DbContextOptions<NewsContext> options) : base(options)
         {
-            optionsBuilder.UseMySql(
-                "Server=localhost;Database=Newspaper;User=root;Password=0G3hxwGD;",
-                new MySqlServerVersion(new Version(8, 0, 40))
-            )
-            .LogTo(Console.WriteLine, Microsoft.Extensions.Logging.LogLevel.Information);
         }
 
         public DbSet<BaseHistory> Histories { get; set; }
         public DbSet<About> Abouts { get; set; }
-
         public DbSet<Category> Categories { get; set; }
-
         public DbSet<SocialMedia> SocialMedias { get; set; }
-
         public DbSet<User> Users { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<News> News { get; set; }
@@ -97,10 +89,34 @@ namespace UdemyCarBook.Persistance.Context
                 .HasForeignKey(n => n.AuthorId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Author>()
+                .HasOne(a => a.CreatedByUser)
+                .WithMany(u => u.CreatedAuthors)
+                .HasForeignKey(a => a.CreatedById)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Author>()
+                .HasOne(a => a.UpdatedByUser)
+                .WithMany(u => u.UpdatedAuthors)
+                .HasForeignKey(a => a.UpdatedById)
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<Category>()
                 .HasMany(c => c.News)
                 .WithOne(n => n.Category)
                 .HasForeignKey(n => n.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Category>()
+                .HasOne(c => c.CreatedByUser)
+                .WithMany(u => u.CreatedCategories)
+                .HasForeignKey(c => c.CreatedById)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Category>()
+                .HasOne(c => c.UpdatedByUser)
+                .WithMany(u => u.UpdatedCategories)
+                .HasForeignKey(c => c.UpdatedById)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Comment>()
@@ -115,11 +131,71 @@ namespace UdemyCarBook.Persistance.Context
                 .HasForeignKey(c => c.ParentCommentId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Comment>()
+                .HasOne(c => c.CreatedByUser)
+                .WithMany(u => u.CreatedComments)
+                .HasForeignKey(c => c.CreatedById)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Comment>()
+                .HasOne(c => c.LastModifiedByUser)
+                .WithMany(u => u.UpdatedComments)
+                .HasForeignKey(c => c.UpdatedById)
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<SocialMedia>()
                 .HasOne(s => s.Author)
                 .WithMany(a => a.SocialMediaAccounts)
                 .HasForeignKey(s => s.AuthorId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<SocialMedia>()
+                .HasOne(s => s.CreatedByUser)
+                .WithMany(u => u.CreatedSocialMedias)
+                .HasForeignKey(s => s.CreatedById)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<SocialMedia>()
+                .HasOne(s => s.UpdatedByUser)
+                .WithMany(u => u.UpdatedSocialMedias)
+                .HasForeignKey(s => s.UpdatedById)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Tag>()
+                .HasOne(t => t.CreatedByUser)
+                .WithMany(u => u.CreatedTags)
+                .HasForeignKey(t => t.CreatedById)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Tag>()
+                .HasOne(t => t.UpdatedByUser)
+                .WithMany(u => u.UpdatedTags)
+                .HasForeignKey(t => t.UpdatedById)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Contact>()
+                .HasOne(c => c.CreatedByUser)
+                .WithMany(u => u.CreatedContacts)
+                .HasForeignKey(c => c.CreatedById)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Contact>()
+                .HasOne(c => c.LastModifiedByUser)
+                .WithMany(u => u.UpdatedContacts)
+                .HasForeignKey(c => c.UpdatedById)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Newsletter>()
+                .HasOne(n => n.CreatedByUser)
+                .WithMany(u => u.CreatedNewsletters)
+                .HasForeignKey(n => n.CreatedById)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Newsletter>()
+                .HasOne(n => n.UpdatedByUser)
+                .WithMany(u => u.UpdatedNewsletters)
+                .HasForeignKey(n => n.UpdatedById)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<User>()
                 .Ignore(u => u.CreatedRecords)

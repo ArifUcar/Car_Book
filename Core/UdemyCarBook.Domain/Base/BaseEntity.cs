@@ -21,7 +21,13 @@ namespace UdemyCarBook.Domain.Base
         /// <summary>
         /// Oluşturulma zamanı
         /// </summary>
+        public DateTime CreationTime { get; set; }
+        public DateTime CreatedTime { get; set; }
         public DateTime CreatedDate { get; set; }
+        public DateTime LastModifiedDate { get; set; }
+        public virtual User LastModifiedByUser { get; set; }
+        [ForeignKey("CreatedById")]
+        public virtual User CreatedByUser { get; set; }
 
         /// <summary>
         /// Oluşturan kullanıcı

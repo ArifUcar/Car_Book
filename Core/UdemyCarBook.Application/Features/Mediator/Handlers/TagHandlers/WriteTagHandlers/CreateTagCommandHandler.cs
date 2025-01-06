@@ -12,11 +12,11 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.TagHandlers.WriteT
 {
     public class CreateTagCommandHandler : IRequestHandler<CreateTagCommand>
     {
-        private readonly IRepository<Tag> _repository;
+        private readonly ITagRepository _repository;
         private readonly IHistoryService _historyService;
         private readonly ILogService _logService;
 
-        public CreateTagCommandHandler(IRepository<Tag> repository, IHistoryService historyService, ILogService logService)
+        public CreateTagCommandHandler(ITagRepository repository, IHistoryService historyService, ILogService logService)
         {
             _repository = repository;
             _historyService = historyService;
@@ -27,18 +27,14 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.TagHandlers.WriteT
         {
             try
             {
-                if (string.IsNullOrEmpty(request.Name))
-                    throw new AuFrameWorkException("Etiket adı boş olamaz", "NAME_REQUIRED", "ValidationError");
-
-                var existingTag = await _repository.GetFirstOrDefaultAsync(x => x.Name == request.Name);
-                if (existingTag != null)
-                    throw new AuFrameWorkException("Bu etiket adı zaten kullanılıyor", "TAG_EXISTS", "ValidationError");
+                if (await _repository.IsNameExistsAsync(request.Name))
+                    throw new AuFrameWorkException("Bu etiket adı zaten kullanılıyor", "NAME_EXISTS", "ValidationError");
 
                 var tag = new Tag
                 {
-                    Id = Guid.NewGuid(),
                     Name = request.Name,
-                    IsDeleted = false
+            
+                    CreatedDate = DateTime.UtcNow
                 };
 
                 await _repository.CreateAsync(tag);
@@ -46,7 +42,7 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.TagHandlers.WriteT
                 
                 await _logService.CreateLog(
                     "Etiket Oluşturma",
-                    $"'{request.Name}' adlı etiket oluşturuldu",
+                    $"'{tag.Name}' adlı etiket oluşturuldu",
                     "Create",
                     "Tag"
                 );

@@ -46,10 +46,7 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.ContactHandlers.Wr
                     Email = request.Email,
                     Subject = request.Subject,
                     Message = request.Message,
-                    IsRead = request.IsRead,
-                    IsReplied = request.IsReplied,
-                    ReplyDate = request.ReplyDate,
-                    ReplyMessage = request.ReplyMessage,
+                    
                     IsDeleted = false
                 };
 

@@ -9,7 +9,6 @@ namespace UdemyCarBook.Application.Interfaces
     public interface IRepository<T> where T : class
     {
         Task<List<T>> GetAllAsync();
-        IQueryable<T> GetAll();
         Task<T> GetByIdAsync(Guid id);
         Task<T> GetFirstOrDefaultAsync(Expression<Func<T, bool>> filter);
         Task CreateAsync(T entity);

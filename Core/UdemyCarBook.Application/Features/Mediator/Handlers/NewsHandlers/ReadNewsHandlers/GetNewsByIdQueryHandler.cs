@@ -43,9 +43,9 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.NewsHandlers.ReadN
                 Status = news.Status,
                 Tags = news.Tags.Select(t => t.Name).ToList(),
                 CreatedDate = news.CreatedDate,
-                CreatedByUserName = news.CreatedByUser?.Name,
+                CreatedByUserName = news.CreatedByUser?.UserName,
                 LastModifiedDate = news.LastModifiedDate,
-                LastModifiedByUserName = news.LastModifiedByUser?.Name
+                LastModifiedByUserName = news.LastModifiedByUser?.UserName
             };
         }
     }

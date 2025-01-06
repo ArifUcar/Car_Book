@@ -39,9 +39,9 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.ContactHandlers.Re
                 ReplyDate = contact.ReplyDate,
                 ReplyMessage = contact.ReplyMessage,
                 CreatedDate = contact.CreatedDate,
-                CreatedByUserName = contact.CreatedByUser != null ? contact.CreatedByUser.Name : null,
+                CreatedByUserName = contact.CreatedByUser != null ? contact.CreatedByUser.UserName : null,
                 LastModifiedDate = contact.LastModifiedDate,
-                LastModifiedByUserName = contact.LastModifiedByUser != null ? contact.LastModifiedByUser.Name : null
+                LastModifiedByUserName = contact.LastModifiedByUser != null ? contact.LastModifiedByUser.UserName : null
             };
         }
     }

@@ -27,7 +27,7 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.UserHandlers.Write
         {
             try
             {
-                if (string.IsNullOrEmpty(request.Username))
+                if (string.IsNullOrEmpty(request.UserName))
                     throw new AuFrameWorkException("Kullanıcı adı boş olamaz", "USERNAME_REQUIRED", "ValidationError");
 
                 if (string.IsNullOrEmpty(request.Password))
@@ -36,14 +36,14 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.UserHandlers.Write
                 if (string.IsNullOrEmpty(request.Email))
                     throw new AuFrameWorkException("E-posta adresi boş olamaz", "EMAIL_REQUIRED", "ValidationError");
 
-                var existingUser = await _repository.GetFirstOrDefaultAsync(x => x.Username == request.Username || x.Email == request.Email);
+                var existingUser = await _repository.GetFirstOrDefaultAsync(x => x.UserName == request.UserName || x.Email == request.Email);
                 if (existingUser != null)
                     throw new AuFrameWorkException("Bu kullanıcı adı veya e-posta adresi zaten kullanılıyor", "USER_EXISTS", "ValidationError");
 
                 var user = new User
                 {
                     Id = Guid.NewGuid(),
-                    Username = request.Username,
+                    UserName = request.UserName,
                     Password = request.Password, // Şifre hash'lenmelidir
                     Email = request.Email,
                     UserType = request.UserType,
@@ -55,7 +55,7 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.UserHandlers.Write
                 
                 await _logService.CreateLog(
                     "Kullanıcı Oluşturma",
-                    $"'{request.Username}' kullanıcı adlı kullanıcı oluşturuldu",
+                    $"'{request.UserName}' kullanıcı adlı kullanıcı oluşturuldu",
                     "Create",
                     "User"
                 );
@@ -65,7 +65,7 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.UserHandlers.Write
                 await _logService.CreateErrorLog(
                     ex,
                     "UserCreate",
-                    $"Kullanıcı oluşturulurken hata: {request.Username}"
+                    $"Kullanıcı oluşturulurken hata: {request.UserName}"
                 );
                 throw new AuFrameWorkException(
                     "Kullanıcı oluşturulurken bir hata oluştu", 

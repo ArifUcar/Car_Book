@@ -12,11 +12,11 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.SocialMediaHandler
 {
     public class UpdateSocialMediaCommandHandler : IRequestHandler<UpdateSocialMediaCommand>
     {
-        private readonly IRepository<SocialMedia> _repository;
+        private readonly ISocialMediaRepository _repository;
         private readonly IHistoryService _historyService;
         private readonly ILogService _logService;
 
-        public UpdateSocialMediaCommandHandler(IRepository<SocialMedia> repository, IHistoryService historyService, ILogService logService)
+        public UpdateSocialMediaCommandHandler(ISocialMediaRepository repository, IHistoryService historyService, ILogService logService)
         {
             _repository = repository;
             _historyService = historyService;
@@ -27,9 +27,9 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.SocialMediaHandler
         {
             try
             {
-                var socialMedia = await _repository.GetByIdAsync(request.Id);
+                var socialMedia = await _repository.GetByIdWithDetailsAsync(request.Id);
                 if (socialMedia == null)
-                    throw new AuFrameWorkException("Sosyal medya bulunamadı", "SOCIAL_MEDIA_NOT_FOUND", "NotFound");
+                    throw new AuFrameWorkException("Sosyal medya hesabı bulunamadı", "SOCIAL_MEDIA_NOT_FOUND", "NotFound");
 
                 if (string.IsNullOrEmpty(request.Platform))
                     throw new AuFrameWorkException("Platform adı boş olamaz", "PLATFORM_REQUIRED", "ValidationError");
@@ -39,6 +39,13 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.SocialMediaHandler
 
                 if (string.IsNullOrEmpty(request.Icon))
                     throw new AuFrameWorkException("İkon boş olamaz", "ICON_REQUIRED", "ValidationError");
+
+                if (socialMedia.Platform != request.Platform || socialMedia.AuthorId != request.AuthorId)
+                {
+                    var isPlatformExists = await _repository.IsPlatformExistsForAuthorAsync(request.Platform, request.AuthorId);
+                    if (isPlatformExists)
+                        throw new AuFrameWorkException("Bu yazar için bu platform zaten eklenmiş", "PLATFORM_EXISTS", "ValidationError");
+                }
 
                 socialMedia.Platform = request.Platform;
                 socialMedia.Url = request.Url;
@@ -54,7 +61,7 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.SocialMediaHandler
                 await _historyService.SaveHistory(socialMedia, "Update");
                 
                 await _logService.CreateLog(
-                    "Sosyal Medya Güncelleme",
+                    "Sosyal Medya Hesabı Güncelleme",
                     $"'{request.Platform}' platformu için sosyal medya hesabı güncellendi",
                     "Update",
                     "SocialMedia"
@@ -65,10 +72,10 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.SocialMediaHandler
                 await _logService.CreateErrorLog(
                     ex,
                     "SocialMediaUpdate",
-                    $"Sosyal medya güncellenirken hata: {request.Platform}"
+                    $"Sosyal medya hesabı güncellenirken hata: {request.Platform}"
                 );
                 throw new AuFrameWorkException(
-                    "Sosyal medya güncellenirken bir hata oluştu", 
+                    "Sosyal medya hesabı güncellenirken bir hata oluştu", 
                     "UPDATE_ERROR",
                     "Error"
                 );

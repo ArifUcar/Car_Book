@@ -36,7 +36,7 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.UserHandlers.Write
                 
                 await _logService.CreateLog(
                     "Kullanıcı Silme",
-                    $"'{user.Username}' kullanıcı adlı kullanıcı silindi",
+                    $"'{user.UserName}' kullanıcı adlı kullanıcı silindi",
                     "Remove",
                     "User"
                 );

@@ -46,9 +46,9 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.CommentHandlers.Re
                     CreatedDate = r.CreatedDate
                 }).ToList(),
                 CreatedDate = comment.CreatedDate,
-                CreatedByUserName = comment.CreatedByUser?.Name,
+                CreatedByUserName = comment.CreatedByUser?.UserName,
                 LastModifiedDate = comment.LastModifiedDate,
-                LastModifiedByUserName = comment.LastModifiedByUser?.Name
+                LastModifiedByUserName = comment.LastModifiedByUser?.UserName
             };
         }
     }

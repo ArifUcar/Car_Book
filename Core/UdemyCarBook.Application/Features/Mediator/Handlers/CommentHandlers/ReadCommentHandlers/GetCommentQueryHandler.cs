@@ -13,40 +13,32 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.CommentHandlers.Re
 {
     public class GetCommentQueryHandler : IRequestHandler<GetCommentQuery, List<GetCommentQueryResult>>
     {
-        private readonly IRepository<Comment> _repository;
+        private readonly ICommentRepository _repository;
 
-        public GetCommentQueryHandler(IRepository<Comment> repository)
+        public GetCommentQueryHandler(ICommentRepository repository)
         {
             _repository = repository;
         }
 
         public async Task<List<GetCommentQueryResult>> Handle(GetCommentQuery request, CancellationToken cancellationToken)
         {
-            var comments = await _repository.GetAllAsync()
-                .Include(x => x.News)
-                .Include(x => x.ParentComment)
-                .Include(x => x.Replies)
-                .Include(x => x.CreatedByUser)
-                .Where(x => !x.IsDeleted)
-                .OrderByDescending(x => x.CreatedDate)
-                .Select(x => new GetCommentQueryResult
-                {
-                    Id = x.Id,
-                    Content = x.Content,
-                    Name = x.Name,
-                    Email = x.Email,
-                    IsApproved = x.IsApproved,
-                    NewsId = x.NewsId,
-                    NewsTitle = x.News.Title,
-                    ParentCommentId = x.ParentCommentId,
-                    ParentCommentContent = x.ParentComment != null ? x.ParentComment.Content : null,
-                    ReplyCount = x.Replies.Count,
-                    CreatedDate = x.CreatedDate,
-                    CreatedByUserName = x.CreatedByUser != null ? x.CreatedByUser.Name : null
-                })
-                .ToListAsync(cancellationToken);
+            var comments = await _repository.GetAllWithDetailsAsync();
 
-            return comments;
+            return comments.Select(x => new GetCommentQueryResult
+            {
+                Id = x.Id,
+                Content = x.Content,
+                Name = x.Name,
+                Email = x.Email,
+                IsApproved = x.IsApproved,
+                NewsId = x.NewsId,
+                NewsTitle = x.News?.Title,
+                ParentCommentId = x.ParentCommentId,
+                ParentCommentContent = x.ParentComment?.Content,
+                ReplyCount = x.Replies?.Count ?? 0,
+                CreatedDate = x.CreatedDate,
+                CreatedByUserName = x.CreatedByUser?.UserName
+            }).ToList();
         }
     }
 } 

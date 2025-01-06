@@ -1,6 +1,6 @@
 using MediatR;
-
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using UdemyCarBook.Application.Features.Mediator.Queries.UserQueries;
@@ -8,51 +8,55 @@ using UdemyCarBook.Application.Features.Mediator.Results.UserResults;
 using UdemyCarBook.Application.Interfaces;
 using UdemyCarBook.Domain.Entities;
 using UdemyCarBook.Domain.Exceptions;
-using System.Linq;
 
 namespace UdemyCarBook.Application.Features.Mediator.Handlers.UserHandlers.ReadUserHandlers
 {
     public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, GetUserByIdQueryResult>
     {
-        private readonly IRepository<User> _repository;
+        private readonly IUserRepository _repository;
 
-        public GetUserByIdQueryHandler(IRepository<User> repository)
+        public GetUserByIdQueryHandler(IUserRepository repository)
         {
             _repository = repository;
         }
 
         public async Task<GetUserByIdQueryResult> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
         {
-            var user = await _repository.GetAllAsync()
-                .Include(x => x.Roles)
-                .Include(x => x.CreatedByUser)
-                .Include(x => x.LastModifiedByUser)
-                .Include(x => x.CommentsCreatedBy)
-                .Include(x => x.CreatedNews)
-                .Include(x => x.UpdatedNews)
-                .Where(x => x.Id == request.Id && !x.IsDeleted)
-                .Select(x => new GetUserByIdQueryResult
-                {
-                    Id = x.Id,
-                    Username = x.Username,
-                    Email = x.Email,
-                    UserType = x.UserType,
-                    RoleNames = x.Roles.Select(r => r.Name).ToList(),
-                    CreatedDate = x.CreatedDate,
-                    CreatedByUserName = x.CreatedByUser.Name,
-                    LastModifiedDate = x.LastModifiedDate,
-                    LastModifiedByUserName = x.LastModifiedByUser != null ? x.LastModifiedByUser.Name : null,
-                    CommentCount = x.CommentsCreatedBy.Count,
-                    CreatedNewsCount = x.CreatedNews.Count,
-                    CreatedNewsNames = x.CreatedNews.Select(n => n.Title).ToList(),
-                    UpdatedNewsNames = x.UpdatedNews.Select(n => n.Title).ToList()
-                })
-                .FirstOrDefaultAsync(cancellationToken);
+            var user = await _repository.GetByIdWithDetailsAsync(request.Id);
 
             if (user == null)
                 throw new AuFrameWorkException("Kullanıcı bulunamadı", "USER_NOT_FOUND", "NotFound");
 
-            return user;
+            return new GetUserByIdQueryResult
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                PhoneNumber = user.PhoneNumber,
+                IsActive = user.IsActive,
+                Roles = user.Roles?.Select(r => r.Name).ToList(),
+                CreatedNews = user.CreatedNews?.Where(n => !n.IsDeleted).Select(n => new UserNewsDto
+                {
+                    Id = n.Id,
+                    Title = n.Title,
+                    PublishDate = n.PublishDate,
+                    CategoryName = n.Category?.Name
+                }).ToList(),
+                CreatedComments = user.CreatedComments?.Where(c => !c.IsDeleted).Select(c => new UserCommentDto
+                {
+                    Id = c.Id,
+                    Content = c.Content,
+                    CreatedDate = c.CreatedDate,
+                    NewsTitle = c.News?.Title,
+                    IsApproved = c.IsApproved
+                }).ToList(),
+                CreatedDate = user.CreatedDate,
+                CreatedByUserName = user.CreatedByUser?.UserName,
+                LastModifiedDate = user.LastModifiedDate,
+                LastModifiedByUserName = user.LastModifiedByUser?.UserName
+            };
         }
     }
 } 

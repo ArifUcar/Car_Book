@@ -12,11 +12,11 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.SocialMediaHandler
 {
     public class SoftDeleteSocialMediaCommandHandler : IRequestHandler<SoftDeleteSocialMediaCommand>
     {
-        private readonly IRepository<SocialMedia> _repository;
+        private readonly ISocialMediaRepository _repository;
         private readonly IHistoryService _historyService;
         private readonly ILogService _logService;
 
-        public SoftDeleteSocialMediaCommandHandler(IRepository<SocialMedia> repository, IHistoryService historyService, ILogService logService)
+        public SoftDeleteSocialMediaCommandHandler(ISocialMediaRepository repository, IHistoryService historyService, ILogService logService)
         {
             _repository = repository;
             _historyService = historyService;
@@ -27,9 +27,9 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.SocialMediaHandler
         {
             try
             {
-                var socialMedia = await _repository.GetByIdAsync(request.Id);
+                var socialMedia = await _repository.GetByIdWithDetailsAsync(request.Id);
                 if (socialMedia == null)
-                    throw new AuFrameWorkException("Sosyal medya bulunamadı", "SOCIAL_MEDIA_NOT_FOUND", "NotFound");
+                    throw new AuFrameWorkException("Sosyal medya hesabı bulunamadı", "SOCIAL_MEDIA_NOT_FOUND", "NotFound");
 
                 socialMedia.IsDeleted = true;
                 socialMedia.LastModifiedDate = DateTime.UtcNow;
@@ -38,7 +38,7 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.SocialMediaHandler
                 await _historyService.SaveHistory(socialMedia, "SoftDelete");
                 
                 await _logService.CreateLog(
-                    "Sosyal Medya Yumuşak Silme",
+                    "Sosyal Medya Hesabı Yumuşak Silme",
                     $"'{socialMedia.Platform}' platformu için sosyal medya hesabı yumuşak silindi",
                     "SoftDelete",
                     "SocialMedia"
@@ -49,10 +49,10 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.SocialMediaHandler
                 await _logService.CreateErrorLog(
                     ex,
                     "SocialMediaSoftDelete",
-                    $"Sosyal medya yumuşak silinirken hata: {request.Id}"
+                    $"Sosyal medya hesabı yumuşak silinirken hata: {request.Id}"
                 );
                 throw new AuFrameWorkException(
-                    "Sosyal medya yumuşak silinirken bir hata oluştu", 
+                    "Sosyal medya hesabı yumuşak silinirken bir hata oluştu", 
                     "SOFT_DELETE_ERROR",
                     "Error"
                 );

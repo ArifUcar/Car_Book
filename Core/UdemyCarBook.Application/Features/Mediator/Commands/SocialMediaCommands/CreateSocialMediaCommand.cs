@@ -9,7 +9,7 @@ namespace UdemyCarBook.Application.Features.Mediator.Commands.SocialMediaCommand
         public string Url { get; set; }
         public string Icon { get; set; }
         public int DisplayOrder { get; set; }
-        public bool IsActive { get; set; }
+        public bool IsActive { get; set; } = true;
         public int? FollowerCount { get; set; }
         public string? AccountName { get; set; }
         public Guid? AuthorId { get; set; }

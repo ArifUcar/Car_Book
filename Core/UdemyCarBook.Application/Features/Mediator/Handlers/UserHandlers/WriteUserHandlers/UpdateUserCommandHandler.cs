@@ -31,22 +31,22 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.UserHandlers.Write
                 if (user == null)
                     throw new AuFrameWorkException("Kullanıcı bulunamadı", "USER_NOT_FOUND", "NotFound");
 
-                if (string.IsNullOrEmpty(request.Username))
-                    throw new AuFrameWorkException("Kullanıcı adı boş olamaz", "USERNAME_REQUIRED", "ValidationError");
+                if (string.IsNullOrEmpty(request.UserName))
+                    throw new AuFrameWorkException("Kullanıcı adı boş olamaz", "Name_REQUIRED", "ValidationError");
 
                 if (string.IsNullOrEmpty(request.Email))
                     throw new AuFrameWorkException("E-posta adresi boş olamaz", "EMAIL_REQUIRED", "ValidationError");
 
                 var existingUser = await _repository.GetFirstOrDefaultAsync(x => 
                     x.Id != request.Id && 
-                    (x.Username == request.Username || x.Email == request.Email)
+                    (x.UserName == request.UserName || x.Email == request.Email)
                 );
                 if (existingUser != null)
                     throw new AuFrameWorkException("Bu kullanıcı adı veya e-posta adresi zaten kullanılıyor", "USER_EXISTS", "ValidationError");
 
-                user.Username = request.Username;
+                user.UserName = request.UserName;
                 if (!string.IsNullOrEmpty(request.Password))
-                    user.Password = request.Password; // Şifre hash'lenmelidir
+                    user.Password = request.Password; 
                 user.Email = request.Email;
                 user.UserType = request.UserType;
                 user.LastModifiedDate = DateTime.UtcNow;
@@ -56,7 +56,7 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.UserHandlers.Write
                 
                 await _logService.CreateLog(
                     "Kullanıcı Güncelleme",
-                    $"'{request.Username}' kullanıcı adlı kullanıcı güncellendi",
+                    $"'{request.UserName}' kullanıcı adlı kullanıcı güncellendi",
                     "Update",
                     "User"
                 );
@@ -66,7 +66,7 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.UserHandlers.Write
                 await _logService.CreateErrorLog(
                     ex,
                     "UserUpdate",
-                    $"Kullanıcı güncellenirken hata: {request.Username}"
+                    $"Kullanıcı güncellenirken hata: {request.UserName}"
                 );
                 throw new AuFrameWorkException(
                     "Kullanıcı güncellenirken bir hata oluştu", 

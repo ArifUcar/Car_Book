@@ -12,11 +12,11 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.SocialMediaHandler
 {
     public class CreateSocialMediaCommandHandler : IRequestHandler<CreateSocialMediaCommand>
     {
-        private readonly IRepository<SocialMedia> _repository;
+        private readonly ISocialMediaRepository _repository;
         private readonly IHistoryService _historyService;
         private readonly ILogService _logService;
 
-        public CreateSocialMediaCommandHandler(IRepository<SocialMedia> repository, IHistoryService historyService, ILogService logService)
+        public CreateSocialMediaCommandHandler(ISocialMediaRepository repository, IHistoryService historyService, ILogService logService)
         {
             _repository = repository;
             _historyService = historyService;
@@ -36,6 +36,10 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.SocialMediaHandler
                 if (string.IsNullOrEmpty(request.Icon))
                     throw new AuFrameWorkException("İkon boş olamaz", "ICON_REQUIRED", "ValidationError");
 
+                var isPlatformExists = await _repository.IsPlatformExistsForAuthorAsync(request.Platform, request.AuthorId);
+                if (isPlatformExists)
+                    throw new AuFrameWorkException("Bu yazar için bu platform zaten eklenmiş", "PLATFORM_EXISTS", "ValidationError");
+
                 var socialMedia = new SocialMedia
                 {
                     Id = Guid.NewGuid(),
@@ -54,7 +58,7 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.SocialMediaHandler
                 await _historyService.SaveHistory(socialMedia, "Create");
                 
                 await _logService.CreateLog(
-                    "Sosyal Medya Oluşturma",
+                    "Sosyal Medya Hesabı Oluşturma",
                     $"'{request.Platform}' platformu için sosyal medya hesabı oluşturuldu",
                     "Create",
                     "SocialMedia"
@@ -65,10 +69,10 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.SocialMediaHandler
                 await _logService.CreateErrorLog(
                     ex,
                     "SocialMediaCreate",
-                    $"Sosyal medya oluşturulurken hata: {request.Platform}"
+                    $"Sosyal medya hesabı oluşturulurken hata: {request.Platform}"
                 );
                 throw new AuFrameWorkException(
-                    "Sosyal medya oluşturulurken bir hata oluştu", 
+                    "Sosyal medya hesabı oluşturulurken bir hata oluştu", 
                     "CREATE_ERROR",
                     "Error"
                 );

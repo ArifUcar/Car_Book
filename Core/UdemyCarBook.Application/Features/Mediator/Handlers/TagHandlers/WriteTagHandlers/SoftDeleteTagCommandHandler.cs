@@ -12,11 +12,11 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.TagHandlers.WriteT
 {
     public class SoftDeleteTagCommandHandler : IRequestHandler<SoftDeleteTagCommand>
     {
-        private readonly IRepository<Tag> _repository;
+        private readonly ITagRepository _repository;
         private readonly IHistoryService _historyService;
         private readonly ILogService _logService;
 
-        public SoftDeleteTagCommandHandler(IRepository<Tag> repository, IHistoryService historyService, ILogService logService)
+        public SoftDeleteTagCommandHandler(ITagRepository repository, IHistoryService historyService, ILogService logService)
         {
             _repository = repository;
             _historyService = historyService;
@@ -27,9 +27,12 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.TagHandlers.WriteT
         {
             try
             {
-                var tag = await _repository.GetByIdAsync(request.Id);
+                var tag = await _repository.GetByIdWithDetailsAsync(request.Id);
                 if (tag == null)
                     throw new AuFrameWorkException("Etiket bulunamadı", "TAG_NOT_FOUND", "NotFound");
+
+                if (tag.News != null && tag.News.Any())
+                    throw new AuFrameWorkException("Bu etiket haberlerde kullanılıyor. Önce haberlerdeki etiketleri kaldırın.", "TAG_HAS_NEWS", "ValidationError");
 
                 tag.IsDeleted = true;
                 tag.LastModifiedDate = DateTime.UtcNow;

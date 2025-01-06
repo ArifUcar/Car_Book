@@ -39,7 +39,7 @@ namespace UdemyCarBook.Persistence.Repositories
                 .Include(x => x.CreatedByUser)
                 .Include(x => x.Tags)
                 .Where(x => !x.IsDeleted)
-                .OrderByDescending(x => x.CreationTime)
+                .OrderByDescending(x => x.CreatedDate)
                 .ToListAsync();
         }
     }

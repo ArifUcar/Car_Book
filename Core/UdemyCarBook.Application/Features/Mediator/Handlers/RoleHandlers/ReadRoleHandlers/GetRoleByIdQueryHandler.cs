@@ -34,13 +34,13 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.RoleHandlers.ReadR
                 Users = role.Users?.Select(u => new UserInRoleDto
                 {
                     Id = u.Id,
-                    Username = u.Username,
+                    Username = u.UserName,
                     Email = u.Email
                 }).ToList(),
                 CreatedDate = role.CreatedDate,
-                CreatedByUserName = role.CreatedByUser != null ? role.CreatedByUser.Name : null,
+                CreatedByUserName = role.CreatedByUser != null ? role.CreatedByUser.UserName : null,
                 LastModifiedDate = role.LastModifiedDate,
-                LastModifiedByUserName = role.LastModifiedByUser != null ? role.LastModifiedByUser.Name : null
+                LastModifiedByUserName = role.LastModifiedByUser != null ? role.LastModifiedByUser.UserName : null
             };
         }
     }

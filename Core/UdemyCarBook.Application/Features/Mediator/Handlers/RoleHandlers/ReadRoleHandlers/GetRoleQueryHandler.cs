@@ -29,7 +29,7 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.RoleHandlers.ReadR
                 Name = x.Name,
                 UserCount = x.Users?.Count ?? 0,
                 CreatedDate = x.CreatedDate,
-                CreatedByUserName = x.CreatedByUser != null ? x.CreatedByUser.Name : null
+                CreatedByUserName = x.CreatedByUser != null ? x.CreatedByUser.UserName : null
             }).ToList();
         }
     }

@@ -12,11 +12,11 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.SocialMediaHandler
 {
     public class RemoveSocialMediaCommandHandler : IRequestHandler<RemoveSocialMediaCommand>
     {
-        private readonly IRepository<SocialMedia> _repository;
+        private readonly ISocialMediaRepository _repository;
         private readonly IHistoryService _historyService;
         private readonly ILogService _logService;
 
-        public RemoveSocialMediaCommandHandler(IRepository<SocialMedia> repository, IHistoryService historyService, ILogService logService)
+        public RemoveSocialMediaCommandHandler(ISocialMediaRepository repository, IHistoryService historyService, ILogService logService)
         {
             _repository = repository;
             _historyService = historyService;
@@ -27,15 +27,15 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.SocialMediaHandler
         {
             try
             {
-                var socialMedia = await _repository.GetByIdAsync(request.Id);
+                var socialMedia = await _repository.GetByIdWithDetailsAsync(request.Id);
                 if (socialMedia == null)
-                    throw new AuFrameWorkException("Sosyal medya bulunamadı", "SOCIAL_MEDIA_NOT_FOUND", "NotFound");
+                    throw new AuFrameWorkException("Sosyal medya hesabı bulunamadı", "SOCIAL_MEDIA_NOT_FOUND", "NotFound");
 
                 await _repository.RemoveAsync(socialMedia);
                 await _historyService.SaveHistory(socialMedia, "Remove");
                 
                 await _logService.CreateLog(
-                    "Sosyal Medya Silme",
+                    "Sosyal Medya Hesabı Silme",
                     $"'{socialMedia.Platform}' platformu için sosyal medya hesabı silindi",
                     "Remove",
                     "SocialMedia"
@@ -46,10 +46,10 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.SocialMediaHandler
                 await _logService.CreateErrorLog(
                     ex,
                     "SocialMediaRemove",
-                    $"Sosyal medya silinirken hata: {request.Id}"
+                    $"Sosyal medya hesabı silinirken hata: {request.Id}"
                 );
                 throw new AuFrameWorkException(
-                    "Sosyal medya silinirken bir hata oluştu", 
+                    "Sosyal medya hesabı silinirken bir hata oluştu", 
                     "REMOVE_ERROR",
                     "Error"
                 );

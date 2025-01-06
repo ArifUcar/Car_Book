@@ -7,49 +7,42 @@ using UdemyCarBook.Application.Features.Mediator.Results.SocialMediaResults;
 using UdemyCarBook.Application.Interfaces;
 using UdemyCarBook.Domain.Entities;
 using UdemyCarBook.Domain.Exceptions;
-using System.Linq;
 
 namespace UdemyCarBook.Application.Features.Mediator.Handlers.SocialMediaHandlers.ReadSocialMediaHandlers
 {
     public class GetSocialMediaByIdQueryHandler : IRequestHandler<GetSocialMediaByIdQuery, GetSocialMediaByIdQueryResult>
     {
-        private readonly IRepository<SocialMedia> _repository;
+        private readonly ISocialMediaRepository _repository;
 
-        public GetSocialMediaByIdQueryHandler(IRepository<SocialMedia> repository)
+        public GetSocialMediaByIdQueryHandler(ISocialMediaRepository repository)
         {
             _repository = repository;
         }
 
         public async Task<GetSocialMediaByIdQueryResult> Handle(GetSocialMediaByIdQuery request, CancellationToken cancellationToken)
         {
-            var socialMedia = await _repository.GetAllAsync()
-                .Include(x => x.Author)
-                .Include(x => x.CreatedByUser)
-                .Include(x => x.LastModifiedByUser)
-                .Where(x => x.Id == request.Id && !x.IsDeleted)
-                .Select(x => new GetSocialMediaByIdQueryResult
-                {
-                    Id = x.Id,
-                    Platform = x.Platform,
-                    Url = x.Url,
-                    Icon = x.Icon,
-                    DisplayOrder = x.DisplayOrder,
-                    IsActive = x.IsActive,
-                    FollowerCount = x.FollowerCount,
-                    AccountName = x.AccountName,
-                    AuthorId = x.AuthorId,
-                    AuthorName = x.Author != null ? x.Author.Name : null,
-                    CreatedDate = x.CreatedDate,
-                    CreatedByUserName = x.CreatedByUser != null ? x.CreatedByUser.Name : null,
-                    LastModifiedDate = x.LastModifiedDate,
-                    LastModifiedByUserName = x.LastModifiedByUser != null ? x.LastModifiedByUser.Name : null
-                })
-                .FirstOrDefaultAsync(cancellationToken);
+            var socialMedia = await _repository.GetByIdWithDetailsAsync(request.Id);
 
             if (socialMedia == null)
-                throw new AuFrameWorkException("Sosyal medya bulunamadı", "SOCIAL_MEDIA_NOT_FOUND", "NotFound");
+                throw new AuFrameWorkException("Sosyal medya hesabı bulunamadı", "SOCIAL_MEDIA_NOT_FOUND", "NotFound");
 
-            return socialMedia;
+            return new GetSocialMediaByIdQueryResult
+            {
+                Id = socialMedia.Id,
+                Platform = socialMedia.Platform,
+                Url = socialMedia.Url,
+                Icon = socialMedia.Icon,
+                DisplayOrder = socialMedia.DisplayOrder,
+                IsActive = socialMedia.IsActive,
+                FollowerCount = socialMedia.FollowerCount,
+                AccountName = socialMedia.AccountName,
+                AuthorId = socialMedia.AuthorId,
+                AuthorName = socialMedia.Author?.Name,
+                CreatedDate = socialMedia.CreatedDate,
+                CreatedByUserName = socialMedia.CreatedByUser != null ? socialMedia.CreatedByUser.UserName : null,
+                LastModifiedDate = socialMedia.LastModifiedDate,
+                LastModifiedByUserName = socialMedia.LastModifiedByUser != null ? socialMedia.LastModifiedByUser.UserName : null
+            };
         }
     }
 } 

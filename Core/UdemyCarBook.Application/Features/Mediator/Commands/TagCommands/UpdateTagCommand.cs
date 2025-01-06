@@ -1,6 +1,5 @@
 using MediatR;
 using System;
-using System.Collections.Generic;
 
 namespace UdemyCarBook.Application.Features.Mediator.Commands.TagCommands
 {
@@ -8,6 +7,7 @@ namespace UdemyCarBook.Application.Features.Mediator.Commands.TagCommands
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public List<Guid> NewsIds { get; set; }
+        public string Description { get; set; }
+        public string Color { get; set; }
     }
 } 

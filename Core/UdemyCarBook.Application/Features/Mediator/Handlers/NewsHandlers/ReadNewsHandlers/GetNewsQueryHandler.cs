@@ -40,7 +40,7 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.NewsHandlers.ReadN
                 Status = x.Status,
                 Tags = x.Tags.Select(t => t.Name).ToList(),
                 CreatedDate = x.CreatedDate,
-                CreatedByUserName = x.CreatedByUser?.Name
+                CreatedByUserName = x.CreatedByUser?.UserName
             }).ToList();
         }
     }

@@ -45,8 +45,7 @@ namespace UdemyCarBook.Domain.Entities
         /// <summary>
         /// Haberi oluşturan kullanıcı
         /// </summary>
-        [ForeignKey("CreatedById")]
-        public virtual User CreatedByUser { get; set; }
+
 
         /// <summary>
         /// Son güncelleyen kullanıcı
@@ -92,13 +91,14 @@ namespace UdemyCarBook.Domain.Entities
         /// <summary>
         /// Son güncelleyen kullanıcı ID'si
         /// </summary>
+        [ForeignKey("LastModifiedByUserId")]
         public Guid? LastModifiedByUserId { get; set; }
 
         /// <summary>
         /// Son güncelleyen kullanıcı
         /// </summary>
-        [ForeignKey("LastModifiedByUserId")]
-        public virtual User LastModifiedByUser { get; set; }
+ 
+
     }
 
     public enum NewsStatus

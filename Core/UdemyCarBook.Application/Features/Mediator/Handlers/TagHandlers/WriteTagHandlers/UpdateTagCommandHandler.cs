@@ -12,11 +12,11 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.TagHandlers.WriteT
 {
     public class UpdateTagCommandHandler : IRequestHandler<UpdateTagCommand>
     {
-        private readonly IRepository<Tag> _repository;
+        private readonly ITagRepository _repository;
         private readonly IHistoryService _historyService;
         private readonly ILogService _logService;
 
-        public UpdateTagCommandHandler(IRepository<Tag> repository, IHistoryService historyService, ILogService logService)
+        public UpdateTagCommandHandler(ITagRepository repository, IHistoryService historyService, ILogService logService)
         {
             _repository = repository;
             _historyService = historyService;
@@ -27,21 +27,15 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.TagHandlers.WriteT
         {
             try
             {
-                var tag = await _repository.GetByIdAsync(request.Id);
+                var tag = await _repository.GetByIdWithDetailsAsync(request.Id);
                 if (tag == null)
                     throw new AuFrameWorkException("Etiket bulunamadı", "TAG_NOT_FOUND", "NotFound");
 
-                if (string.IsNullOrEmpty(request.Name))
-                    throw new AuFrameWorkException("Etiket adı boş olamaz", "NAME_REQUIRED", "ValidationError");
-
-                var existingTag = await _repository.GetFirstOrDefaultAsync(x => 
-                    x.Id != request.Id && 
-                    x.Name == request.Name
-                );
-                if (existingTag != null)
-                    throw new AuFrameWorkException("Bu etiket adı zaten kullanılıyor", "TAG_EXISTS", "ValidationError");
+                if (tag.Name != request.Name && await _repository.IsNameExistsAsync(request.Name))
+                    throw new AuFrameWorkException("Bu etiket adı zaten kullanılıyor", "NAME_EXISTS", "ValidationError");
 
                 tag.Name = request.Name;
+              
                 tag.LastModifiedDate = DateTime.UtcNow;
 
                 await _repository.UpdateAsync(tag);
@@ -49,7 +43,7 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.TagHandlers.WriteT
                 
                 await _logService.CreateLog(
                     "Etiket Güncelleme",
-                    $"'{request.Name}' adlı etiket güncellendi",
+                    $"'{tag.Name}' adlı etiket güncellendi",
                     "Update",
                     "Tag"
                 );
@@ -59,7 +53,7 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.TagHandlers.WriteT
                 await _logService.CreateErrorLog(
                     ex,
                     "TagUpdate",
-                    $"Etiket güncellenirken hata: {request.Name}"
+                    $"Etiket güncellenirken hata: {request.Id}"
                 );
                 throw new AuFrameWorkException(
                     "Etiket güncellenirken bir hata oluştu", 

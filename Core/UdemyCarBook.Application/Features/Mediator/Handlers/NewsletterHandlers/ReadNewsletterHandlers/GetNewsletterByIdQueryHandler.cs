@@ -34,9 +34,9 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.NewsletterHandlers
                 SubscriptionDate = newsletter.SubscriptionDate,
                 UnsubscribeDate = newsletter.UnsubscribeDate,
                 CreatedDate = newsletter.CreatedDate,
-                CreatedByUserName = newsletter.CreatedByUser != null ? newsletter.CreatedByUser.Name : null,
+                CreatedByUserName = newsletter.CreatedByUser != null ? newsletter.CreatedByUser.UserName : null,
                 LastModifiedDate = newsletter.LastModifiedDate,
-                LastModifiedByUserName = newsletter.LastModifiedByUser != null ? newsletter.LastModifiedByUser.Name : null
+                LastModifiedByUserName = newsletter.LastModifiedByUser != null ? newsletter.LastModifiedByUser.UserName : null
             };
         }
     }

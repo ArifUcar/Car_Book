@@ -7,6 +7,8 @@ namespace UdemyCarBook.Application.Features.Mediator.Results.TagResults
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
+        public string Description { get; set; }
+        public string Color { get; set; }
         public List<TagNewsDto> News { get; set; }
         public DateTime CreatedDate { get; set; }
         public string CreatedByUserName { get; set; }
@@ -18,7 +20,8 @@ namespace UdemyCarBook.Application.Features.Mediator.Results.TagResults
     {
         public Guid Id { get; set; }
         public string Title { get; set; }
-        public string AuthorName { get; set; }
         public DateTime PublishDate { get; set; }
+        public string CategoryName { get; set; }
+        public string AuthorName { get; set; }
     }
 } 

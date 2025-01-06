@@ -19,27 +19,72 @@ namespace UdemyCarBook.Persistance.Repositories
             _context = context;
         }
 
-        public async Task<Comment> GetByIdWithDetailsAsync(Guid id)
-        {
-            return await _context.Comments
-                .Include(x => x.News)
-                .Include(x => x.ParentComment)
-                .Include(x => x.Replies)
-                .Include(x => x.CreatedByUser)
-                .Include(x => x.LastModifiedByUser)
-                .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
-        }
-
         public async Task<List<Comment>> GetAllWithDetailsAsync()
         {
             return await _context.Comments
-                .Include(x => x.News)
-                .Include(x => x.ParentComment)
-                .Include(x => x.Replies)
-                .Include(x => x.CreatedByUser)
                 .Where(x => !x.IsDeleted)
                 .OrderByDescending(x => x.CreatedDate)
                 .ToListAsync();
+        }
+
+        public async Task<Comment> GetByIdWithDetailsAsync(Guid id)
+        {
+            return await _context.Comments
+                .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
+        }
+
+        public async Task<List<Comment>> GetActiveCommentsAsync()
+        {
+            return await _context.Comments
+                .Where(x => !x.IsDeleted && x.IsApproved)
+                .OrderByDescending(x => x.CreatedDate)
+                .ToListAsync();
+        }
+
+        public async Task<List<Comment>> GetCommentsByNewsIdAsync(Guid newsId)
+        {
+            return await _context.Comments
+                .Where(x => x.NewsId == newsId && !x.IsDeleted && x.IsApproved)
+                .OrderByDescending(x => x.CreatedDate)
+                .ToListAsync();
+        }
+
+        public async Task<List<Comment>> GetCommentsByUserIdAsync(Guid userId)
+        {
+            return await _context.Comments
+                .Where(x => x.CreatedById == userId && !x.IsDeleted)
+                .OrderByDescending(x => x.CreatedDate)
+                .ToListAsync();
+        }
+
+        public async Task<List<Comment>> GetUnApprovedCommentsAsync()
+        {
+            return await _context.Comments
+                .Where(x => !x.IsDeleted && !x.IsApproved)
+                .OrderByDescending(x => x.CreatedDate)
+                .ToListAsync();
+        }
+
+        public async Task<List<Comment>> GetApprovedCommentsAsync()
+        {
+            return await _context.Comments
+                .Where(x => !x.IsDeleted && x.IsApproved)
+                .OrderByDescending(x => x.CreatedDate)
+                .ToListAsync();
+        }
+
+        public async Task<List<Comment>> GetRepliesByCommentIdAsync(Guid commentId)
+        {
+            return await _context.Comments
+                .Where(x => x.ParentCommentId == commentId && !x.IsDeleted && x.IsApproved)
+                .OrderByDescending(x => x.CreatedDate)
+                .ToListAsync();
+        }
+
+        public async Task<int> GetCommentCountByNewsIdAsync(Guid newsId)
+        {
+            return await _context.Comments
+                .CountAsync(x => x.NewsId == newsId && !x.IsDeleted && x.IsApproved);
         }
     }
 }

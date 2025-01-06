@@ -39,7 +39,7 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.UserHandlers.Write
                 
                 await _logService.CreateLog(
                     "Kullanıcı Yumuşak Silme",
-                    $"'{user.Username}' kullanıcı adlı kullanıcı yumuşak silindi",
+                    $"'{user.UserName}' kullanıcı adlı kullanıcı yumuşak silindi",
                     "SoftDelete",
                     "User"
                 );

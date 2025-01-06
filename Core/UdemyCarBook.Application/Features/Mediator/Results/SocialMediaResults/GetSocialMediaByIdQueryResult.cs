@@ -17,6 +17,6 @@ namespace UdemyCarBook.Application.Features.Mediator.Results.SocialMediaResults
         public DateTime CreatedDate { get; set; }
         public string CreatedByUserName { get; set; }
         public DateTime? LastModifiedDate { get; set; }
-        public string? LastModifiedByUserName { get; set; }
+        public string LastModifiedByUserName { get; set; }
     }
 } 
