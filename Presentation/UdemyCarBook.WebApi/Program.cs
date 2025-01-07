@@ -8,8 +8,37 @@ using UdemyCarBook.Application.Interfaces.IService;
 using UdemyCarBook.WebApi.Middleware;
 using Microsoft.EntityFrameworkCore;
 using UdemyCarBook.Persistence.Repositories;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using UdemyCarBook.Application.Tools;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// HTTP Context Accessor
+builder.Services.AddHttpContextAccessor();
+
+// JWT Authentication
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = JwtTokenDefaults.ValidIssuer,
+        ValidAudience = JwtTokenDefaults.ValidAudience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtTokenDefaults.Key))
+    };
+});
 
 // Database Configuration
 builder.Services.AddDbContext<NewsContext>(options =>
@@ -22,7 +51,6 @@ builder.Services.AddDbContext<NewsContext>(options =>
 });
 
 // Service registrations
-builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ILogService, LogService>();
 builder.Services.AddScoped<IHistoryService, HistoryService>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -43,9 +71,41 @@ builder.Services.AddScoped<IContactRepository, ContactRepository>();
 builder.Services.AddApplicationService(builder.Configuration);
 
 builder.Services.AddControllers();
+
 // Swagger/OpenAPI yapılandırması
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "News API", Version = "v1" });
+
+    // JWT için güvenlik tanımı
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                },
+                Scheme = "oauth2",
+                Name = "Bearer",
+                In = ParameterLocation.Header,
+            },
+            new List<string>()
+        }
+    });
+});
 
 // CORS servisinin doğru sırayla eklenmesi
 builder.Services.AddCors(options =>
@@ -63,11 +123,18 @@ app.UseCors("AllowAllOrigins");
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "News API V1");
+    });
 }
 app.UseExceptionMiddleware();
 app.UseHttpsRedirection();
+
+// Authentication ve Authorization middleware'lerinin sırası önemli
+app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapControllers();
 
 app.Run();

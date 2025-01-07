@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UdemyCarBook.Domain.Base;
 using UdemyCarBook.Domain.Entities;
+using System.Reflection;
 
 namespace UdemyCarBook.Persistance.Context
 {
@@ -108,7 +109,8 @@ namespace UdemyCarBook.Persistance.Context
 
                 // Many-to-Many relationship with Role
                 entity.HasMany(u => u.Roles)
-                    .WithMany(r => r.Users);
+                    .WithMany(r => r.Users)
+                    .UsingEntity(j => j.ToTable("UserRoles"));
 
                 // One-to-Many relationships
                 entity.HasMany(u => u.CreatedNews)
@@ -260,6 +262,26 @@ namespace UdemyCarBook.Persistance.Context
                 .WithMany(u => u.UpdatedNewsletters)
                 .HasForeignKey(n => n.UpdatedByUserId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Role>()
+                .HasOne(r => r.CreatedByUser)
+                .WithMany(u => u.CreatedRoles)
+                .HasForeignKey(r => r.CreatedById)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Role>()
+                .HasOne(r => r.UpdatedByUser)
+                .WithMany(u => u.UpdatedRoles)
+                .HasForeignKey(r => r.UpdatedByUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Role>()
+                .HasOne(r => r.LastModifiedByUser)
+                .WithMany(u => u.LastModifiedRoles)
+                .HasForeignKey(r => r.LastModifiedByUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
             base.OnModelCreating(modelBuilder);
         }

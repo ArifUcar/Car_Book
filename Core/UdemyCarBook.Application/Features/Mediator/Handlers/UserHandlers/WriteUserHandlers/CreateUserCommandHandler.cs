@@ -12,15 +12,21 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.UserHandlers.Write
 {
     public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand>
     {
-        private readonly IRepository<User> _repository;
+        private readonly IUserRepository _repository;
         private readonly IHistoryService _historyService;
         private readonly ILogService _logService;
+        private readonly IRoleRepository _roleRepository;
 
-        public CreateUserCommandHandler(IRepository<User> repository, IHistoryService historyService, ILogService logService)
+        public CreateUserCommandHandler(
+            IUserRepository repository, 
+            IHistoryService historyService, 
+            ILogService logService,
+            IRoleRepository roleRepository)
         {
             _repository = repository;
             _historyService = historyService;
             _logService = logService;
+            _roleRepository = roleRepository;
         }
 
         public async Task Handle(CreateUserCommand request, CancellationToken cancellationToken)
@@ -36,19 +42,47 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.UserHandlers.Write
                 if (string.IsNullOrEmpty(request.Email))
                     throw new AuFrameWorkException("E-posta adresi boş olamaz", "EMAIL_REQUIRED", "ValidationError");
 
-                var existingUser = await _repository.GetFirstOrDefaultAsync(x => x.UserName == request.UserName || x.Email == request.Email);
+                var existingUser = await _repository.GetByUsernameAsync(request.UserName);
                 if (existingUser != null)
-                    throw new AuFrameWorkException("Bu kullanıcı adı veya e-posta adresi zaten kullanılıyor", "USER_EXISTS", "ValidationError");
+                    throw new AuFrameWorkException("Bu kullanıcı adı zaten kullanılıyor", "USER_EXISTS", "ValidationError");
 
                 var user = new User
                 {
                     Id = Guid.NewGuid(),
                     UserName = request.UserName,
-                    Password = request.Password, // Şifre hash'lenmelidir
+                    Password = request.Password, // TODO: Şifre hash'lenmelidir
                     Email = request.Email,
+                    FirstName = request.FirstName,
+                    LastName = request.LastName,
+                    PhoneNumber = request.PhoneNumber,
                     UserType = request.UserType,
+                    IsActive = request.IsActive,
+                    CreatedDate = DateTime.UtcNow,
                     IsDeleted = false
                 };
+
+                // Rolleri ekle
+                if (request.Roles != null && request.Roles.Count > 0)
+                {
+                    user.Roles = new List<Role>();
+                    foreach (var roleName in request.Roles)
+                    {
+                        var role = await _roleRepository.GetByNameAsync(roleName);
+                        if (role == null)
+                        {
+                            role = new Role
+                            {
+                                Id = Guid.NewGuid(),
+                                Name = roleName,
+                                CreatedDate = DateTime.UtcNow,
+                                CreatedById = user.Id,
+                                IsDeleted = false
+                            };
+                            await _roleRepository.CreateAsync(role);
+                        }
+                        user.Roles.Add(role);
+                    }
+                }
 
                 await _repository.CreateAsync(user);
                 await _historyService.SaveHistory(user, "Create");

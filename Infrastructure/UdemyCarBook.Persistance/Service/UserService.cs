@@ -1,10 +1,11 @@
 using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using UdemyCarBook.Application.Interfaces;
 using UdemyCarBook.Application.Interfaces.IService;
 using UdemyCarBook.Domain.Entities;
-using UdemyCarBook.Domain.Enums;
+using UdemyCarBook.Domain.Exceptions;
 
 namespace UdemyCarBook.Persistance.Service
 {
@@ -21,19 +22,13 @@ namespace UdemyCarBook.Persistance.Service
 
         public async Task<User> GetCurrentUserAsync()
         {
-            // Geçici olarak sabit bir kullanıcı oluşturuyoruz
-            // TODO: JWT token'dan kullanıcı bilgisini al
-            var user = new User
-            {
-                Id = Guid.NewGuid(),
-                UserName = "admin",
-                Email = "admin@example.com",
-                FirstName = "Admin",
-                LastName = "User",
-                UserType = UserType.SuperAdmin,
-                IsActive = true,
-                CreatedDate = DateTime.UtcNow
-            };
+            var userId = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+                throw new AuFrameWorkException("Oturum açmış kullanıcı bulunamadı", "USER_NOT_FOUND", "NotFound");
+
+            var user = await _userRepository.GetByIdWithDetailsAsync(Guid.Parse(userId));
+            if (user == null)
+                throw new AuFrameWorkException("Kullanıcı bulunamadı", "USER_NOT_FOUND", "NotFound");
 
             return user;
         }

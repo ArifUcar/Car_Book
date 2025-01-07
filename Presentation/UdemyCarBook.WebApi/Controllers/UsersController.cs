@@ -1,10 +1,12 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UdemyCarBook.Application.Features.Mediator.Commands.UserCommands;
 using UdemyCarBook.Application.Features.Mediator.Queries.UserQueries;
 
 namespace UdemyCarBook.WebApi.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -30,39 +32,40 @@ namespace UdemyCarBook.WebApi.Controllers
             return Ok(value);
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateUserCommand command)
         {
             await _mediator.Send(command);
-            return Ok("Kullanıcı başarıyla oluşturuldu");
+            return Ok();
         }
 
         [HttpPut]
         public async Task<IActionResult> Update([FromBody] UpdateUserCommand command)
         {
             await _mediator.Send(command);
-            return Ok("Kullanıcı başarıyla güncellendi");
+            return Ok();
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Remove(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             await _mediator.Send(new RemoveUserCommand(id));
-            return Ok("Kullanıcı başarıyla silindi");
+            return Ok();
         }
 
-        [HttpDelete("soft-delete/{id}")]
+        [HttpPut("soft-delete/{id}")]
         public async Task<IActionResult> SoftDelete(Guid id)
         {
             await _mediator.Send(new SoftDeleteUserCommand(id));
-            return Ok("Kullanıcı başarıyla pasif hale getirildi");
+            return Ok();
         }
 
         [HttpPut("change-password")]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordCommand command)
         {
             await _mediator.Send(command);
-            return Ok("Şifre başarıyla değiştirildi");
+            return Ok();
         }
     }
 } 

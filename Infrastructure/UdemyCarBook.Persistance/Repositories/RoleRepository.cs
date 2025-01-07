@@ -1,4 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using UdemyCarBook.Application.Interfaces;
 using UdemyCarBook.Domain.Entities;
 using UdemyCarBook.Persistance.Context;
@@ -39,16 +43,20 @@ namespace UdemyCarBook.Persistance.Repositories
         public async Task<List<Role>> GetRolesByUserIdAsync(Guid userId)
         {
             return await _context.Roles
-                .Include(x => x.Users)
-                .Where(x => x.Users.Any(u => u.Id == userId) && !x.IsDeleted)
-                .OrderBy(x => x.Name)
+                .Include(r => r.Users)
+                .Where(r => r.Users.Any(u => u.Id == userId))
                 .ToListAsync();
         }
 
         public async Task<bool> IsRoleNameExistsAsync(string name)
         {
+            return await _context.Roles.AnyAsync(r => r.Name == name);
+        }
+
+        public async Task<Role> GetByNameAsync(string name)
+        {
             return await _context.Roles
-                .AnyAsync(x => x.Name == name && !x.IsDeleted);
+                .FirstOrDefaultAsync(r => r.Name == name);
         }
     }
 } 

@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using UdemyCarBook.Application.Features.Mediator.Queries.RoleQueries;
 
 namespace UdemyCarBook.WebApi.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class RolesController : ControllerBase
@@ -28,36 +30,29 @@ namespace UdemyCarBook.WebApi.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var value = await _mediator.Send(new GetRoleByIdQuery { Id = id });
+            var value = await _mediator.Send(new GetRoleByIdQuery(id));
             return Ok(value);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(CreateRoleCommand command)
+        public async Task<IActionResult> Create([FromBody] CreateRoleCommand command)
         {
             await _mediator.Send(command);
-            return Ok("Rol başarıyla oluşturuldu");
+            return Ok();
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update(UpdateRoleCommand command)
+        public async Task<IActionResult> Update([FromBody] UpdateRoleCommand command)
         {
             await _mediator.Send(command);
-            return Ok("Rol başarıyla güncellendi");
+            return Ok();
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Remove(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            await _mediator.Send(new RemoveRoleCommand { Id = id });
-            return Ok("Rol başarıyla silindi");
-        }
-
-        [HttpDelete("soft-delete/{id}")]
-        public async Task<IActionResult> SoftDelete(Guid id)
-        {
-            await _mediator.Send(new SoftDeleteRoleCommand { Id = id });
-            return Ok("Rol başarıyla arşivlendi");
+            await _mediator.Send(new RemoveRoleCommand(id));
+            return Ok();
         }
     }
 } 
