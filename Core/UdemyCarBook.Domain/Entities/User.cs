@@ -20,12 +20,25 @@ namespace UdemyCarBook.Domain.Entities
         public bool IsActive { get; set; }
         public DateTime? LastLoginDate { get; set; }
         public string RefreshToken { get; set; }
+
+
+
         public DateTime? RefreshTokenExpireDate { get; set; }
+
+        public Guid? UpdatedByUserId { get; set; }
+        public Guid? LastModifiedByUserId { get; set; }
 
         // Navigation Properties
         public virtual ICollection<Role> Roles { get; set; }
         public virtual ICollection<Role> CreatedRoles { get; set; }
         public virtual ICollection<Role> UpdatedRoles { get; set; }
+        public virtual ICollection<Role> LastModifiedRoles { get; set; }
+        public virtual ICollection<User> CreatedByUsers { get; set; }
+        public virtual ICollection<User> UpdatedByUsers { get; set; }
+        public virtual ICollection<User> LastModifiedByUsers { get; set; }
+        public virtual User CreatedByUser { get; set; }
+        public virtual User UpdatedByUser { get; set; }
+        public virtual User LastModifiedByUser { get; set; }
         public virtual ICollection<News> CreatedNews { get; set; }
         public virtual ICollection<News> UpdatedNews { get; set; }
         public virtual ICollection<Comment> CreatedComments { get; set; }
@@ -53,6 +66,10 @@ namespace UdemyCarBook.Domain.Entities
             Roles = new HashSet<Role>();
             CreatedRoles = new HashSet<Role>();
             UpdatedRoles = new HashSet<Role>();
+            LastModifiedRoles = new HashSet<Role>();
+            CreatedByUsers = new HashSet<User>();
+            UpdatedByUsers = new HashSet<User>();
+            LastModifiedByUsers = new HashSet<User>();
             CreatedNews = new HashSet<News>();
             UpdatedNews = new HashSet<News>();
             CreatedComments = new HashSet<Comment>();

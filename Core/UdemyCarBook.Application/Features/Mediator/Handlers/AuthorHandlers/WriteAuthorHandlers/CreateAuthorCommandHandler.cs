@@ -32,8 +32,8 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.AuthorHandlers.Wri
 
                 var author = new Author
                 {
-                    Name = request.Name,
-                    Surname = request.Surname,
+                    FirstName = request.Name,
+                    LastName = request.Surname,
                     ImageUrl = request.ImageUrl,
                     Description = request.Description,
                     Email = request.Email,
@@ -45,7 +45,7 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.AuthorHandlers.Wri
                 
                 await _logService.CreateLog(
                     "Yazar Oluşturma",
-                    $"'{author.Name} {author.Surname}' adlı yazar oluşturuldu",
+                    $"'{author.FirstName} {author.LastName}' adlı yazar oluşturuldu",
                     "Create",
                     "Author"
                 );

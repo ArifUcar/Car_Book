@@ -37,14 +37,27 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.UserHandlers.ReadU
                 PhoneNumber = user.PhoneNumber,
                 IsActive = user.IsActive,
                 Roles = user.Roles?.Select(r => r.Name).ToList(),
-                CreatedNews = user.CreatedNews?.Where(n => !n.IsDeleted).Select(n => new UserNewsDto
+                CreatedNews = user.CreatedNews?.Where(n => !n.IsDeleted).Select(n => new NewsInfo
                 {
                     Id = n.Id,
                     Title = n.Title,
-                    PublishDate = n.PublishDate,
-                    CategoryName = n.Category?.Name
+                    CreatedDate = n.CreatedDate
                 }).ToList(),
-                CreatedComments = user.CreatedComments?.Where(c => !c.IsDeleted).Select(c => new UserCommentDto
+                UpdatedNews = user.UpdatedNews?.Where(n => !n.IsDeleted).Select(n => new NewsInfo
+                {
+                    Id = n.Id,
+                    Title = n.Title,
+                    CreatedDate = n.CreatedDate
+                }).ToList(),
+                CreatedComments = user.CreatedComments?.Where(c => !c.IsDeleted).Select(c => new CommentInfo
+                {
+                    Id = c.Id,
+                    Content = c.Content,
+                    CreatedDate = c.CreatedDate,
+                    NewsTitle = c.News?.Title,
+                    IsApproved = c.IsApproved
+                }).ToList(),
+                UpdatedComments = user.UpdatedComments?.Where(c => !c.IsDeleted).Select(c => new CommentInfo
                 {
                     Id = c.Id,
                     Content = c.Content,

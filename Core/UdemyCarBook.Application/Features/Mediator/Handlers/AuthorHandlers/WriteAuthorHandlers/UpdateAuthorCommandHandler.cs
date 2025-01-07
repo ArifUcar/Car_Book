@@ -34,8 +34,8 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.AuthorHandlers.Wri
                 if (author.Email != request.Email && await _repository.IsEmailExistsAsync(request.Email))
                     throw new AuFrameWorkException("Bu e-posta adresi zaten kullanılıyor", "EMAIL_EXISTS", "ValidationError");
 
-                author.Name = request.Name;
-                author.Surname = request.Surname;
+                author.FirstName = request.Name;
+                author.LastName = request.Surname;
                 author.ImageUrl = request.ImageUrl;
                 author.Description = request.Description;
                 author.Email = request.Email;
@@ -46,7 +46,7 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.AuthorHandlers.Wri
                 
                 await _logService.CreateLog(
                     "Yazar Güncelleme",
-                    $"'{author.Name} {author.Surname}' adlı yazar güncellendi",
+                    $"'{author.FirstName} {author.LastName}' adlı yazar güncellendi",
                     "Update",
                     "Author"
                 );

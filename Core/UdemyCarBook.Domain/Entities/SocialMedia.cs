@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
 using UdemyCarBook.Domain.Base;
 
 namespace UdemyCarBook.Domain.Entities
@@ -49,5 +46,14 @@ namespace UdemyCarBook.Domain.Entities
         /// </summary>
         public Guid? AuthorId { get; set; }
         public virtual Author? Author { get; set; }
+
+        [ForeignKey("CreatedById")]
+        public virtual User CreatedByUser { get; set; }
+
+        [ForeignKey("UpdatedByUserId")]
+        public virtual User UpdatedByUser { get; set; }
+
+        [ForeignKey("LastModifiedByUserId")]
+        public virtual User LastModifiedByUser { get; set; }
     }
 }

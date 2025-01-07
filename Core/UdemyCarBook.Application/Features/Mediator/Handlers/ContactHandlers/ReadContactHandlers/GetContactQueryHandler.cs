@@ -34,7 +34,7 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.ContactHandlers.Re
                 IsReplied = x.IsReplied,
                 ReplyDate = x.ReplyDate,
                 ReplyMessage = x.ReplyMessage,
-                CreatedDate = x.CreationTime,
+                CreatedDate = x.CreatedDate,
            
             }).ToList();
         }

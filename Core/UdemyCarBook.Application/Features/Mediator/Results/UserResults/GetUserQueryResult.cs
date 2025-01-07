@@ -18,4 +18,4 @@ namespace UdemyCarBook.Application.Features.Mediator.Results.UserResults
         public DateTime CreatedDate { get; set; }
         public string CreatedByUserName { get; set; }
     }
-} 
+}

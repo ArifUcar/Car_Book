@@ -20,7 +20,7 @@ namespace UdemyCarBook.Persistance.Repositories
                 .Include(x => x.CreatedByUser)
                 .Include(x => x.LastModifiedByUser)
                 .Where(x => !x.IsDeleted)
-                .OrderByDescending(x => x.CreationTime)
+                .OrderByDescending(x => x.CreatedDate)
                 .ToListAsync();
         }
 
@@ -37,7 +37,7 @@ namespace UdemyCarBook.Persistance.Repositories
             return await _context.Contacts
                 .Include(x => x.CreatedByUser)
                 .Where(x => !x.IsDeleted && !x.IsRead)
-                .OrderByDescending(x => x.CreationTime)
+                .OrderByDescending(x => x.CreatedDate)
                 .ToListAsync();
         }
 
@@ -46,7 +46,7 @@ namespace UdemyCarBook.Persistance.Repositories
             return await _context.Contacts
                 .Include(x => x.CreatedByUser)
                 .Where(x => !x.IsDeleted && !x.IsReplied)
-                .OrderByDescending(x => x.CreationTime)
+                .OrderByDescending(x => x.CreatedDate)
                 .ToListAsync();
         }
     }

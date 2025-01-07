@@ -37,7 +37,7 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.SocialMediaHandler
                 FollowerCount = socialMedia.FollowerCount,
                 AccountName = socialMedia.AccountName,
                 AuthorId = socialMedia.AuthorId,
-                AuthorName = socialMedia.Author?.Name,
+                AuthorName = socialMedia.Author?.FirstName,
                 CreatedDate = socialMedia.CreatedDate,
                 CreatedByUserName = socialMedia.CreatedByUser != null ? socialMedia.CreatedByUser.UserName : null,
                 LastModifiedDate = socialMedia.LastModifiedDate,

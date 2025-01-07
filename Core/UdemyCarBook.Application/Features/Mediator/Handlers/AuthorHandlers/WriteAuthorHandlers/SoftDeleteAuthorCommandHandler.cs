@@ -42,7 +42,7 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.AuthorHandlers.Wri
                 
                 await _logService.CreateLog(
                     "Yazar Yumuşak Silme",
-                    $"'{author.Name} {author.Surname}' adlı yazar yumuşak silindi",
+                    $"'{author.FirstName} {author.LastName}' adlı yazar yumuşak silindi",
                     "SoftDelete",
                     "Author"
                 );

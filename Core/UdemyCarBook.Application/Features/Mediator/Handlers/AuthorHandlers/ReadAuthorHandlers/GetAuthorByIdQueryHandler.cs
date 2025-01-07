@@ -30,8 +30,8 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.AuthorHandlers.Rea
             return new GetAuthorByIdQueryResult
             {
                 Id = author.Id,
-                Name = author.Name,
-                Surname = author.Surname,
+                Name = author.FirstName,
+                Surname = author.LastName,
                 ImageUrl = author.ImageUrl,
                 Description = author.Description,
                 Email = author.Email,

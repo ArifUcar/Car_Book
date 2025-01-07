@@ -15,12 +15,18 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.RoleHandlers.Write
         private readonly IRoleRepository _repository;
         private readonly IHistoryService _historyService;
         private readonly ILogService _logService;
+        private readonly IUserService _userService;
 
-        public CreateRoleCommandHandler(IRoleRepository repository, IHistoryService historyService, ILogService logService)
+        public CreateRoleCommandHandler(
+            IRoleRepository repository, 
+            IHistoryService historyService, 
+            ILogService logService,
+            IUserService userService)
         {
             _repository = repository;
             _historyService = historyService;
             _logService = logService;
+            _userService = userService;
         }
 
         public async Task Handle(CreateRoleCommand request, CancellationToken cancellationToken)
@@ -34,10 +40,16 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.RoleHandlers.Write
                 if (isRoleNameExists)
                     throw new AuFrameWorkException("Bu rol adı zaten kullanılıyor", "ROLE_NAME_EXISTS", "ValidationError");
 
+                var currentUser = await _userService.GetCurrentUserAsync();
+                if (currentUser == null)
+                    throw new AuFrameWorkException("Oturum açmış kullanıcı bulunamadı", "USER_NOT_FOUND", "NotFound");
+
                 var role = new Role
                 {
                     Id = Guid.NewGuid(),
                     Name = request.Name,
+                    CreatedById = currentUser.Id,
+                    CreatedDate = DateTime.UtcNow,
                     IsDeleted = false
                 };
 

@@ -22,8 +22,10 @@ builder.Services.AddDbContext<NewsContext>(options =>
 });
 
 // Service registrations
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ILogService, LogService>();
 builder.Services.AddScoped<IHistoryService, HistoryService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 // Repository registrations
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));

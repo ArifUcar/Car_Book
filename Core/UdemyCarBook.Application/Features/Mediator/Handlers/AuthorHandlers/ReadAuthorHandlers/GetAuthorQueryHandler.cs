@@ -26,8 +26,8 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.AuthorHandlers.Rea
             return authors.Select(x => new GetAuthorQueryResult
             {
                 Id = x.Id,
-                Name = x.Name,
-                Surname = x.Surname,
+                Name = x.FirstName,
+                Surname = x.LastName,
                 ImageUrl = x.ImageUrl,
                 Description = x.Description,
                 Email = x.Email,

@@ -19,6 +19,7 @@ namespace UdemyCarBook.Persistance.Repositories
             return await _context.Roles
                 .Include(x => x.Users)
                 .Include(x => x.CreatedByUser)
+               .Include(x => x.UpdatedByUser)  // Eklenmeli
                 .Include(x => x.LastModifiedByUser)
                 .Where(x => !x.IsDeleted)
                 .OrderBy(x => x.Name)
@@ -30,6 +31,7 @@ namespace UdemyCarBook.Persistance.Repositories
             return await _context.Roles
                 .Include(x => x.Users)
                 .Include(x => x.CreatedByUser)
+                 .Include(x => x.UpdatedByUser)  // Eklenmeli
                 .Include(x => x.LastModifiedByUser)
                 .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
         }

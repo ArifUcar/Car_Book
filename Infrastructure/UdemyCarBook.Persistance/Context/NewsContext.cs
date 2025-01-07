@@ -59,29 +59,87 @@ namespace UdemyCarBook.Persistance.Context
                 .HasOne(n => n.CreatedByUser)
                 .WithMany(u => u.CreatedNews)
                 .HasForeignKey(n => n.CreatedById)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<News>()
                 .HasOne(n => n.UpdatedByUser)
                 .WithMany(u => u.UpdatedNews)
-                .HasForeignKey(n => n.UpdatedById)
-                .OnDelete(DeleteBehavior.Restrict);
+                .HasForeignKey(n => n.UpdatedByUserId)
+                .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<Role>(entity =>
+            {
+                entity.HasOne(r => r.LastModifiedByUser)
+                    .WithMany(u => u.LastModifiedRoles)
+                    .HasForeignKey(r => r.LastModifiedByUserId)
+                    .IsRequired(false)
+                    .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<Role>()
-                .HasOne(r => r.CreatedByUser)
-                .WithMany(u => u.CreatedRoles)
-                .HasForeignKey(r => r.CreatedById)
-                .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(r => r.UpdatedByUser)
+                    .WithMany(u => u.UpdatedRoles)
+                    .HasForeignKey(r => r.UpdatedByUserId)
+                    .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<Role>()
-                .HasOne(r => r.UpdatedByUser)
-                .WithMany(u => u.UpdatedRoles)
-                .HasForeignKey(r => r.UpdatedById)
-                .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(r => r.CreatedByUser)
+                    .WithMany(u => u.CreatedRoles)
+                    .HasForeignKey(r => r.CreatedById)
+                    .OnDelete(DeleteBehavior.NoAction);
+            });
 
-            modelBuilder.Entity<User>()
-                .HasMany(u => u.Roles)
-                .WithMany(r => r.Users);
+            modelBuilder.Entity<User>(entity =>
+            {
+                // Self-referencing relationships
+                entity.HasOne(u => u.CreatedByUser)
+                    .WithMany(u => u.CreatedByUsers)
+                    .HasForeignKey("CreatedById")
+                    .IsRequired(false)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasOne(u => u.UpdatedByUser)
+                    .WithMany(u => u.UpdatedByUsers)
+                    .HasForeignKey("UpdatedByUserId")
+                    .IsRequired(false)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasOne(u => u.LastModifiedByUser)
+                    .WithMany(u => u.LastModifiedByUsers)
+                    .HasForeignKey("LastModifiedByUserId")
+                    .IsRequired(false)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                // Many-to-Many relationship with Role
+                entity.HasMany(u => u.Roles)
+                    .WithMany(r => r.Users);
+
+                // One-to-Many relationships
+                entity.HasMany(u => u.CreatedNews)
+                    .WithOne(n => n.CreatedByUser)
+                    .HasForeignKey(n => n.CreatedById)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasMany(u => u.UpdatedNews)
+                    .WithOne(n => n.UpdatedByUser)
+                    .HasForeignKey(n => n.UpdatedByUserId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasMany(u => u.CreatedRoles)
+                    .WithOne(r => r.CreatedByUser)
+                    .HasForeignKey(r => r.CreatedById)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasMany(u => u.UpdatedRoles)
+                    .WithOne(r => r.UpdatedByUser)
+                    .HasForeignKey(r => r.UpdatedByUserId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasMany(u => u.LastModifiedRoles)
+                    .WithOne(r => r.LastModifiedByUser)
+                    .HasForeignKey(r => r.LastModifiedByUserId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                // Ignore virtual collections
+                entity.Ignore(u => u.CreatedRecords);
+                entity.Ignore(u => u.UpdatedRecords);
+            });
 
             modelBuilder.Entity<Author>()
                 .HasMany(a => a.News)
@@ -93,13 +151,19 @@ namespace UdemyCarBook.Persistance.Context
                 .HasOne(a => a.CreatedByUser)
                 .WithMany(u => u.CreatedAuthors)
                 .HasForeignKey(a => a.CreatedById)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Author>()
                 .HasOne(a => a.UpdatedByUser)
                 .WithMany(u => u.UpdatedAuthors)
-                .HasForeignKey(a => a.UpdatedById)
-                .OnDelete(DeleteBehavior.Restrict);
+                .HasForeignKey(a => a.UpdatedByUserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Author>()
+                .HasOne(a => a.LastModifiedByUser)
+                .WithMany()
+                .HasForeignKey(a => a.LastModifiedByUserId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Category>()
                 .HasMany(c => c.News)
@@ -111,13 +175,13 @@ namespace UdemyCarBook.Persistance.Context
                 .HasOne(c => c.CreatedByUser)
                 .WithMany(u => u.CreatedCategories)
                 .HasForeignKey(c => c.CreatedById)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Category>()
                 .HasOne(c => c.UpdatedByUser)
                 .WithMany(u => u.UpdatedCategories)
-                .HasForeignKey(c => c.UpdatedById)
-                .OnDelete(DeleteBehavior.Restrict);
+                .HasForeignKey(c => c.UpdatedByUserId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Comment>()
                 .HasOne(c => c.News)
@@ -135,13 +199,13 @@ namespace UdemyCarBook.Persistance.Context
                 .HasOne(c => c.CreatedByUser)
                 .WithMany(u => u.CreatedComments)
                 .HasForeignKey(c => c.CreatedById)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Comment>()
                 .HasOne(c => c.LastModifiedByUser)
                 .WithMany(u => u.UpdatedComments)
-                .HasForeignKey(c => c.UpdatedById)
-                .OnDelete(DeleteBehavior.Restrict);
+                .HasForeignKey(c => c.UpdatedByUserId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<SocialMedia>()
                 .HasOne(s => s.Author)
@@ -153,53 +217,49 @@ namespace UdemyCarBook.Persistance.Context
                 .HasOne(s => s.CreatedByUser)
                 .WithMany(u => u.CreatedSocialMedias)
                 .HasForeignKey(s => s.CreatedById)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<SocialMedia>()
                 .HasOne(s => s.UpdatedByUser)
                 .WithMany(u => u.UpdatedSocialMedias)
-                .HasForeignKey(s => s.UpdatedById)
-                .OnDelete(DeleteBehavior.Restrict);
+                .HasForeignKey(s => s.UpdatedByUserId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Tag>()
                 .HasOne(t => t.CreatedByUser)
                 .WithMany(u => u.CreatedTags)
                 .HasForeignKey(t => t.CreatedById)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Tag>()
                 .HasOne(t => t.UpdatedByUser)
                 .WithMany(u => u.UpdatedTags)
-                .HasForeignKey(t => t.UpdatedById)
-                .OnDelete(DeleteBehavior.Restrict);
+                .HasForeignKey(t => t.UpdatedByUserId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Contact>()
                 .HasOne(c => c.CreatedByUser)
                 .WithMany(u => u.CreatedContacts)
                 .HasForeignKey(c => c.CreatedById)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Contact>()
                 .HasOne(c => c.LastModifiedByUser)
                 .WithMany(u => u.UpdatedContacts)
-                .HasForeignKey(c => c.UpdatedById)
-                .OnDelete(DeleteBehavior.Restrict);
+                .HasForeignKey(c => c.UpdatedByUserId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Newsletter>()
                 .HasOne(n => n.CreatedByUser)
                 .WithMany(u => u.CreatedNewsletters)
                 .HasForeignKey(n => n.CreatedById)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Newsletter>()
                 .HasOne(n => n.UpdatedByUser)
                 .WithMany(u => u.UpdatedNewsletters)
-                .HasForeignKey(n => n.UpdatedById)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<User>()
-                .Ignore(u => u.CreatedRecords)
-                .Ignore(u => u.UpdatedRecords);
+                .HasForeignKey(n => n.UpdatedByUserId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             base.OnModelCreating(modelBuilder);
         }

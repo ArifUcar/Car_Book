@@ -36,7 +36,7 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.NewsHandlers.ReadN
                 CategoryId = news.CategoryId,
                 CategoryName = news.Category.Name,
                 AuthorId = news.AuthorId,
-                AuthorName = news.Author.Name,
+                AuthorName = news.Author.FirstName,
                 ImageUrl = news.ImageUrl,
                 Summary = news.Summary,
                 ViewCount = news.ViewCount,

@@ -13,23 +13,24 @@ namespace UdemyCarBook.Application.Features.Mediator.Results.UserResults
         public string PhoneNumber { get; set; }
         public bool IsActive { get; set; }
         public List<string> Roles { get; set; }
-        public List<UserNewsDto> CreatedNews { get; set; }
-        public List<UserCommentDto> CreatedComments { get; set; }
         public DateTime CreatedDate { get; set; }
         public string CreatedByUserName { get; set; }
         public DateTime? LastModifiedDate { get; set; }
         public string LastModifiedByUserName { get; set; }
+        public List<NewsInfo> CreatedNews { get; set; }
+        public List<NewsInfo> UpdatedNews { get; set; }
+        public List<CommentInfo> CreatedComments { get; set; }
+        public List<CommentInfo> UpdatedComments { get; set; }
     }
 
-    public class UserNewsDto
+    public class NewsInfo
     {
         public Guid Id { get; set; }
         public string Title { get; set; }
-        public DateTime PublishDate { get; set; }
-        public string CategoryName { get; set; }
+        public DateTime CreatedDate { get; set; }
     }
 
-    public class UserCommentDto
+    public class CommentInfo
     {
         public Guid Id { get; set; }
         public string Content { get; set; }

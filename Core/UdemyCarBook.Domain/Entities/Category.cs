@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,5 +29,19 @@ namespace UdemyCarBook.Domain.Entities
         /// Bu kategorideki haberler
         /// </summary>
         public virtual ICollection<News> News { get; set; }
+
+        [ForeignKey("CreatedById")]
+        public virtual User CreatedByUser { get; set; }
+
+        [ForeignKey("UpdatedByUserId")]
+        public virtual User UpdatedByUser { get; set; }
+
+        [ForeignKey("LastModifiedByUserId")]
+        public virtual User LastModifiedByUser { get; set; }
+
+        public Category()
+        {
+            News = new HashSet<News>();
+        }
     }
 }

@@ -22,7 +22,7 @@ namespace UdemyCarBook.Persistance.Repositories
                 .Include(x => x.CreatedByUser)
                 .Include(x => x.LastModifiedByUser)
                 .Where(x => !x.IsDeleted)
-                .OrderBy(x => x.Name)
+                .OrderBy(x => x.FirstName)
                 .ToListAsync();
         }
 
@@ -41,7 +41,7 @@ namespace UdemyCarBook.Persistance.Repositories
             return await _context.Authors
                 .Include(x => x.News)
                 .Where(x => !x.IsDeleted && x.News.Any(n => !n.IsDeleted))
-                .OrderBy(x => x.Name)
+                .OrderBy(x => x.FirstName)
                 .ToListAsync();
         }
 
