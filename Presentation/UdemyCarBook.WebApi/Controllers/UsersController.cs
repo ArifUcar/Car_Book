@@ -8,6 +8,7 @@ using UdemyCarBook.Application.Features.Mediator.Results.UserResults;
 
 namespace UdemyCarBook.WebApi.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
@@ -20,7 +21,7 @@ namespace UdemyCarBook.WebApi.Controllers
         }
 
         [HttpGet]
-        [AUAuthorize]
+        [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> GetAll()
         {
             var values = await _mediator.Send(new GetUserQuery());
@@ -28,7 +29,7 @@ namespace UdemyCarBook.WebApi.Controllers
         }
 
         [HttpGet("{id}")]
-        [AUAuthorize]
+        [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> GetById(Guid id)
         {
             var value = await _mediator.Send(new GetUserByIdQuery(id));
@@ -44,7 +45,7 @@ namespace UdemyCarBook.WebApi.Controllers
         }
 
         [HttpPut]
-        [AUAuthorize]
+        [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> Update([FromBody] UpdateUserCommand command)
         {
             await _mediator.Send(command);
@@ -52,7 +53,7 @@ namespace UdemyCarBook.WebApi.Controllers
         }
 
         [HttpDelete("{id}")]
-        [AUAuthorize("Admin")]
+        [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> Delete(Guid id)
         {
             await _mediator.Send(new SoftDeleteUserCommand(id));

@@ -8,7 +8,7 @@ using UdemyCarBook.Application.Features.Mediator.Queries.RoleQueries;
 
 namespace UdemyCarBook.WebApi.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class RolesController : ControllerBase

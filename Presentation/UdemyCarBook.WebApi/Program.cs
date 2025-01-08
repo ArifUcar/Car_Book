@@ -53,6 +53,14 @@ builder.Services.AddAuthentication(options =>
                 context.Response.Headers.Add("Token-Expired", "true");
             }
             return Task.CompletedTask;
+        },
+        OnTokenValidated = async context =>
+        {
+            var claims = context.Principal.Claims;
+            foreach (var claim in claims)
+            {
+                Console.WriteLine($"Claim Type: {claim.Type}, Claim Value: {claim.Value}");
+            }
         }
     };
 });
@@ -103,31 +111,25 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "News API", Version = "v1" });
 
     // JWT için güvenlik tanımı
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    var securityScheme = new OpenApiSecurityScheme
     {
-        Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
         Name = "Authorization",
+        Description = "Enter JWT Bearer token **_only_**",
         In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer"
-    });
-
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement()
-    {
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        Reference = new OpenApiReference
         {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                },
-                Scheme = "oauth2",
-                Name = "Bearer",
-                In = ParameterLocation.Header,
-            },
-            new List<string>()
+            Id = JwtBearerDefaults.AuthenticationScheme,
+            Type = ReferenceType.SecurityScheme
         }
+    };
+
+    c.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, securityScheme);
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        { securityScheme, Array.Empty<string>() }
     });
 });
 
@@ -143,10 +145,6 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Creat
 
 var app = builder.Build();
 
-// CORS middleware'inin doğru sırayla kullanılması
-app.UseCors("AllowAllOrigins");
-
-// HTTP istek pipeline'ını yapılandırma
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -155,10 +153,14 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "News API V1");
     });
 }
+
 app.UseExceptionMiddleware();
 app.UseHttpsRedirection();
 
-// Authentication ve Authorization middleware'lerinin sırası önemli
+// CORS middleware'i authentication'dan önce gelmeli
+app.UseCors("AllowAllOrigins");
+
+// Authentication ve Authorization middleware'leri
 app.UseAuthentication();
 app.UseAuthorization();
 

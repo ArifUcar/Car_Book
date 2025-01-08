@@ -16,4 +16,8 @@
     <ProjectReference Include="..\UdemyCarBook.Domain\UdemyCarBook.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\Mediator\Handlers\AuthHandlers\" />
+  </ItemGroup>
+
 </Project>

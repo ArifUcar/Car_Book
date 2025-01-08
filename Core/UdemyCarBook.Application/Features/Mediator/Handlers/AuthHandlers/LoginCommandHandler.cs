@@ -6,16 +6,19 @@ using UdemyCarBook.Application.Features.Mediator.Commands.AuthCommands;
 using UdemyCarBook.Application.Interfaces;
 using UdemyCarBook.Application.Tools;
 using UdemyCarBook.Domain.Exceptions;
+using UdemyCarBook.Application.Interfaces.IService;
 
 namespace UdemyCarBook.Application.Features.Mediator.Handlers.AuthHandlers
 {
     public class LoginCommandHandler : IRequestHandler<LoginCommand, TokenResponseDto>
     {
         private readonly IUserRepository _userRepository;
+        private readonly IPasswordHashService _passwordHashService;
 
-        public LoginCommandHandler(IUserRepository userRepository)
+        public LoginCommandHandler(IUserRepository userRepository, IPasswordHashService passwordHashService)
         {
             _userRepository = userRepository;
+            _passwordHashService = passwordHashService;
         }
 
         public async Task<TokenResponseDto> Handle(LoginCommand request, CancellationToken cancellationToken)
@@ -24,8 +27,13 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.AuthHandlers
             if (user == null)
                 throw new AuFrameWorkException("Kullanıcı adı veya şifre hatalı", "INVALID_CREDENTIALS", "ValidationError");
 
-           
-            if (user.Password != request.Password)
+            var isPasswordValid = await _passwordHashService.VerifyPasswordAsync(
+                request.Password,
+                user.PasswordHash,
+                user.PasswordSalt
+            );
+
+            if (!isPasswordValid)
                 throw new AuFrameWorkException("Kullanıcı adı veya şifre hatalı", "INVALID_CREDENTIALS", "ValidationError");
 
             if (!user.IsActive)
