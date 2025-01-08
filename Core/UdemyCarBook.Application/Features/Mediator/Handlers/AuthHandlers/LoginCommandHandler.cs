@@ -24,7 +24,7 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.AuthHandlers
             if (user == null)
                 throw new AuFrameWorkException("Kullanıcı adı veya şifre hatalı", "INVALID_CREDENTIALS", "ValidationError");
 
-            // TODO: Şifre hash kontrolü yapılacak
+           
             if (user.Password != request.Password)
                 throw new AuFrameWorkException("Kullanıcı adı veya şifre hatalı", "INVALID_CREDENTIALS", "ValidationError");
 

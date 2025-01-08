@@ -16,17 +16,20 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.UserHandlers.Write
         private readonly IHistoryService _historyService;
         private readonly ILogService _logService;
         private readonly IRoleRepository _roleRepository;
+        private readonly IPasswordHashService _passwordHashService;
 
         public CreateUserCommandHandler(
             IUserRepository repository, 
             IHistoryService historyService, 
             ILogService logService,
-            IRoleRepository roleRepository)
+            IRoleRepository roleRepository,
+            IPasswordHashService passwordHashService)
         {
             _repository = repository;
             _historyService = historyService;
             _logService = logService;
             _roleRepository = roleRepository;
+            _passwordHashService = passwordHashService;
         }
 
         public async Task Handle(CreateUserCommand request, CancellationToken cancellationToken)
@@ -42,19 +45,28 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.UserHandlers.Write
                 if (string.IsNullOrEmpty(request.Email))
                     throw new AuFrameWorkException("E-posta adresi boş olamaz", "EMAIL_REQUIRED", "ValidationError");
 
+                var existingUserByEmail = await _repository.GetByEmailAsync(request.Email);
+                if (existingUserByEmail != null)
+                    throw new AuFrameWorkException("Bu e-posta adresi zaten kullanılıyor", "EMAIL_EXISTS", "ValidationError");
+
                 var existingUser = await _repository.GetByUsernameAsync(request.UserName);
                 if (existingUser != null)
                     throw new AuFrameWorkException("Bu kullanıcı adı zaten kullanılıyor", "USER_EXISTS", "ValidationError");
 
+                // Şifreyi hashle
+                var (passwordHash, passwordSalt) = await _passwordHashService.HashPasswordAsync(request.Password);
+
                 var user = new User
                 {
                     Id = Guid.NewGuid(),
-                    UserName = request.UserName,
-                    Password = request.Password, // TODO: Şifre hash'lenmelidir
-                    Email = request.Email,
-                    FirstName = request.FirstName,
-                    LastName = request.LastName,
-                    PhoneNumber = request.PhoneNumber,
+                    UserName = request.UserName?.Trim(),
+                    Password = null, // Artık plain text şifreyi saklamıyoruz
+                    PasswordHash = passwordHash,
+                    PasswordSalt = passwordSalt,
+                    Email = request.Email?.Trim().ToLower(),
+                    FirstName = request.FirstName?.Trim(),
+                    LastName = request.LastName?.Trim(),
+                    PhoneNumber = request.PhoneNumber?.Trim(),
                     UserType = request.UserType,
                     IsActive = request.IsActive,
                     CreatedDate = DateTime.UtcNow,
@@ -67,24 +79,43 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.UserHandlers.Write
                     user.Roles = new List<Role>();
                     foreach (var roleName in request.Roles)
                     {
-                        var role = await _roleRepository.GetByNameAsync(roleName);
+                        if (string.IsNullOrEmpty(roleName)) continue;
+
+                        // Rol adını büyük harfe çevir ve boşlukları temizle
+                        var normalizedRoleName = roleName.Trim().ToUpper();
+
+                        var role = await _roleRepository.GetByNameAsync(normalizedRoleName);
                         if (role == null)
                         {
-                            role = new Role
-                            {
-                                Id = Guid.NewGuid(),
-                                Name = roleName,
-                                CreatedDate = DateTime.UtcNow,
-                                CreatedById = user.Id,
-                                IsDeleted = false
-                            };
-                            await _roleRepository.CreateAsync(role);
+                            // Eğer rol bulunamazsa hata fırlat
+                            throw new AuFrameWorkException(
+                                $"'{roleName}' rolü sistemde bulunamadı", 
+                                "ROLE_NOT_FOUND", 
+                                "ValidationError"
+                            );
                         }
                         user.Roles.Add(role);
+
+                        await _logService.CreateLog(
+                            "Rol Ataması",
+                            $"'{user.UserName}' kullanıcısına '{role.Name}' rolü atandı",
+                            "Create",
+                            "UserRole"
+                        );
+                    }
+                }
+                else
+                {
+                    // Varsayılan olarak "USER" rolünü ata
+                    var defaultRole = await _roleRepository.GetByNameAsync("USER");
+                    if (defaultRole != null)
+                    {
+                        user.Roles = new List<Role> { defaultRole };
                     }
                 }
 
                 await _repository.CreateAsync(user);
+
                 await _historyService.SaveHistory(user, "Create");
                 
                 await _logService.CreateLog(
@@ -94,15 +125,15 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.UserHandlers.Write
                     "User"
                 );
             }
-            catch (Exception ex) when (ex is not AuFrameWorkException)
+            catch (Exception ex)
             {
                 await _logService.CreateErrorLog(
                     ex,
                     "UserCreate",
-                    $"Kullanıcı oluşturulurken hata: {request.UserName}"
+                    $"Kullanıcı oluşturulurken hata: {ex.Message} - {request.UserName}"
                 );
                 throw new AuFrameWorkException(
-                    "Kullanıcı oluşturulurken bir hata oluştu", 
+                    $"Kullanıcı oluşturulurken bir hata oluştu: {ex.Message}", 
                     "CREATE_ERROR",
                     "Error"
                 );

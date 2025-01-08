@@ -13,9 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UdemyCarBook.Persistance", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{0376B707-04C1-468F-BC9F-3F40AD97C214}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UdemyCarBook.WebApi", "Presentation\UdemyCarBook.WebApi\UdemyCarBook.WebApi.csproj", "{68AA4EF7-D7F6-48CB-8495-81246CD59F42}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AU-Framework.WebApi", "Presentation\UdemyCarBook.WebApi\AU-Framework.WebApi.csproj", "{68AA4EF7-D7F6-48CB-8495-81246CD59F42}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UdemyCarBook.Application", "Core\UdemyCarBook.Application\UdemyCarBook.Application.csproj", "{A3B40173-55A3-4E49-8B5A-A9493E4CE609}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AU-Framework.Application", "Core\UdemyCarBook.Application\AU-Framework.Application.csproj", "{A3B40173-55A3-4E49-8B5A-A9493E4CE609}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -55,8 +55,11 @@ namespace UdemyCarBook.Persistance.Repositories
 
         public async Task<Role> GetByNameAsync(string name)
         {
+            // Rol adını büyük harfe çevir ve boşlukları temizle
+            var normalizedName = name.Trim().ToUpper();
+            
             return await _context.Roles
-                .FirstOrDefaultAsync(r => r.Name == name);
+                .FirstOrDefaultAsync(r => r.Name.ToUpper() == normalizedName && !r.IsDeleted);
         }
     }
 } 

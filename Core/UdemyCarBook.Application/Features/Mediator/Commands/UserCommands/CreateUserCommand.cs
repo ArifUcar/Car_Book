@@ -1,6 +1,8 @@
-using MediatR;
+using System;
 using System.Collections.Generic;
+using MediatR;
 using UdemyCarBook.Domain.Enums;
+using System.Text.Json.Serialization;
 
 namespace UdemyCarBook.Application.Features.Mediator.Commands.UserCommands
 {
@@ -44,11 +46,12 @@ namespace UdemyCarBook.Application.Features.Mediator.Commands.UserCommands
         /// <summary>
         /// Aktif/Pasif durumu
         /// </summary>
-        public bool IsActive { get; set; }
+        public bool IsActive { get; set; } = true;
 
         /// <summary>
         /// Kullanıcı rolleri
         /// </summary>
-        public List<string> Roles { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public List<string> Roles { get; set; } = new List<string>();
     }
 } 

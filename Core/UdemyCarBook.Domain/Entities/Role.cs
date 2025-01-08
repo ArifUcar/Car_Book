@@ -1,28 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 using UdemyCarBook.Domain.Base;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace UdemyCarBook.Domain.Entities
 {
     public class Role : BaseEntity
     {
-    
         public string Name { get; set; }
+        public string Description { get; set; }
 
-  
+        [JsonIgnore]
         public virtual ICollection<User> Users { get; set; }
 
-        [ForeignKey("CreatedById")]
+        [JsonIgnore]
         public virtual User CreatedByUser { get; set; }
 
-        [ForeignKey("UpdatedByUserId")]
+        [JsonIgnore]
         public virtual User UpdatedByUser { get; set; }
 
-        [ForeignKey("LastModifiedByUserId")]
+        [JsonIgnore]
         public virtual User LastModifiedByUser { get; set; }
 
         public Role()

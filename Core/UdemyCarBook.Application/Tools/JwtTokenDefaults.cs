@@ -4,7 +4,7 @@ namespace UdemyCarBook.Application.Tools
     {
         public const string ValidAudience = "https://localhost";
         public const string ValidIssuer = "https://localhost";
-        public const string Key = "UdemyCarBook2024!*UdemyCarBook2024!*";
+        public const string Key = "carbook2024carbook2024carbook2024++";
         public const int Expire = 60; // Token geçerlilik süresi (dakika)
     }
 } 

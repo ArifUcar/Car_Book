@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using UdemyCarBook.Application.Features.Mediator.Queries.UserQueries;
 using UdemyCarBook.Application.Features.Mediator.Results.UserResults;
 using UdemyCarBook.Application.Interfaces;
-using UdemyCarBook.Domain.Entities;
 
 namespace UdemyCarBook.Application.Features.Mediator.Handlers.UserHandlers.ReadUserHandlers
 {
@@ -31,8 +30,9 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.UserHandlers.ReadU
                 FirstName = x.FirstName,
                 LastName = x.LastName,
                 PhoneNumber = x.PhoneNumber,
+                UserType = x.UserType,
                 IsActive = x.IsActive,
-                Roles = x.Roles?.Select(r => r.Name).ToList(),
+                Roles = x.Roles?.Select(r => r.Name).ToList() ?? new List<string>(),
                 NewsCount = x.CreatedNews?.Count(n => !n.IsDeleted) ?? 0,
                 CommentsCount = x.CreatedComments?.Count(c => !c.IsDeleted) ?? 0,
                 CreatedDate = x.CreatedDate,

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UdemyCarBook.Domain.Enums;
 
 namespace UdemyCarBook.Application.Features.Mediator.Results.UserResults
 {
@@ -11,11 +12,12 @@ namespace UdemyCarBook.Application.Features.Mediator.Results.UserResults
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string PhoneNumber { get; set; }
+        public UserType UserType { get; set; }
         public bool IsActive { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public string CreatedByUserName { get; set; }
         public List<string> Roles { get; set; }
         public int NewsCount { get; set; }
         public int CommentsCount { get; set; }
-        public DateTime CreatedDate { get; set; }
-        public string CreatedByUserName { get; set; }
     }
 }

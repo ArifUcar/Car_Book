@@ -14,6 +14,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using UdemyCarBook.Application.Tools;
 using Microsoft.OpenApi.Models;
+using MediatR;
+using UdemyCarBook.Application.Features.Mediator.Commands.UserCommands;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,15 +30,30 @@ builder.Services.AddAuthentication(options =>
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(options =>
 {
+    options.SaveToken = true;
+    options.RequireHttpsMetadata = false;
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
+        ClockSkew = TimeSpan.Zero,
         ValidIssuer = JwtTokenDefaults.ValidIssuer,
         ValidAudience = JwtTokenDefaults.ValidAudience,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtTokenDefaults.Key))
+    };
+
+    options.Events = new JwtBearerEvents
+    {
+        OnAuthenticationFailed = context =>
+        {
+            if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+            {
+                context.Response.Headers.Add("Token-Expired", "true");
+            }
+            return Task.CompletedTask;
+        }
     };
 });
 
@@ -70,7 +87,14 @@ builder.Services.AddScoped<IContactRepository, ContactRepository>();
 
 builder.Services.AddApplicationService(builder.Configuration);
 
-builder.Services.AddControllers();
+builder.Services.AddScoped<IPasswordHashService, PasswordHashService>();
+
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.WriteIndented = true;
+    });
 
 // Swagger/OpenAPI yapılandırması
 builder.Services.AddEndpointsApiExplorer();
@@ -113,6 +137,9 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAllOrigins", builder =>
         builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 });
+
+// MediatR
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateUserCommand).Assembly));
 
 var app = builder.Build();
 
