@@ -1,4 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using UdemyCarBook.Application.Interfaces;
 using UdemyCarBook.Domain.Entities;
 using UdemyCarBook.Persistance.Context;
@@ -14,13 +18,16 @@ namespace UdemyCarBook.Persistance.Repositories
             _context = context;
         }
 
+        public DbContext Context => _context;
+
         public async Task<List<User>> GetAllWithDetailsAsync()
         {
-            return await _context.Users
+            var query = _context.Users
                 .Include(x => x.Roles)
                 .Where(x => !x.IsDeleted)
-                .OrderBy(x => x.UserName)
-                .ToListAsync();
+                .OrderBy(x => x.UserName);
+
+            return await query.ToListAsync();
         }
 
         public async Task<User> GetByIdWithDetailsAsync(Guid id)
@@ -80,6 +87,25 @@ namespace UdemyCarBook.Persistance.Repositories
                 .AnyAsync(x => x.Id == userId && 
                               !x.IsDeleted && 
                               x.Roles.Any(r => r.Name == roleName && !r.IsDeleted));
+        }
+
+        public override async Task CreateAsync(User user)
+        {
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
+
+            try
+            {
+                await _context.Users.AddAsync(user);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException(
+                    $"Kullanıcı oluşturulurken bir hata oluştu: {ex.Message}", 
+                    ex
+                );
+            }
         }
     }
 } 

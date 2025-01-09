@@ -39,8 +39,7 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.RoleHandlers.ReadR
                 }).ToList(),
                 CreatedDate = role.CreatedDate,
                 CreatedByUserName = role.CreatedByUser != null ? role.CreatedByUser.UserName : null,
-                LastModifiedDate = role.LastModifiedDate,
-                LastModifiedByUserName = role.LastModifiedByUser != null ? role.LastModifiedByUser.UserName : null
+ 
             };
         }
     }

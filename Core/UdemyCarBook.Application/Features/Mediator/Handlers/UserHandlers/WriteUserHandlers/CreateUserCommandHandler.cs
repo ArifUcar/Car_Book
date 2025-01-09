@@ -34,6 +34,7 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.UserHandlers.Write
 
         public async Task Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
+            using var transaction = await _repository.Context.Database.BeginTransactionAsync(cancellationToken);
             try
             {
                 if (string.IsNullOrEmpty(request.UserName))
@@ -60,7 +61,7 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.UserHandlers.Write
                 {
                     Id = Guid.NewGuid(),
                     UserName = request.UserName?.Trim(),
-                    Password = null, // Artık plain text şifreyi saklamıyoruz
+                    Password = null,
                     PasswordHash = passwordHash,
                     PasswordSalt = passwordSalt,
                     Email = request.Email?.Trim().ToLower(),
@@ -73,48 +74,48 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.UserHandlers.Write
                     IsDeleted = false
                 };
 
-                // Rolleri ekle
-                if (request.Roles != null && request.Roles.Count > 0)
+                // Kullanıcıyı oluştur
+                await _repository.CreateAsync(user);
+
+                // Rolleri kontrol et ve ekle
+                var roleNames = request.Roles?.Where(r => !string.IsNullOrEmpty(r)).ToList() ?? new List<string>();
+                if (!roleNames.Any())
                 {
-                    user.Roles = new List<Role>();
-                    foreach (var roleName in request.Roles)
+                    roleNames.Add("USER"); // Varsayılan rol
+                }
+
+                foreach (var roleName in roleNames)
+                {
+                    var role = await _roleRepository.GetByNameAsync(roleName.Trim().ToUpper());
+                    if (role == null)
                     {
-                        if (string.IsNullOrEmpty(roleName)) continue;
-
-                        // Rol adını büyük harfe çevir ve boşlukları temizle
-                        var normalizedRoleName = roleName.Trim().ToUpper();
-
-                        var role = await _roleRepository.GetByNameAsync(normalizedRoleName);
-                        if (role == null)
-                        {
-                            // Eğer rol bulunamazsa hata fırlat
-                            throw new AuFrameWorkException(
-                                $"'{roleName}' rolü sistemde bulunamadı", 
-                                "ROLE_NOT_FOUND", 
-                                "ValidationError"
-                            );
-                        }
-                        user.Roles.Add(role);
-
-                        await _logService.CreateLog(
-                            "Rol Ataması",
-                            $"'{user.UserName}' kullanıcısına '{role.Name}' rolü atandı",
-                            "Create",
-                            "UserRole"
+                        throw new AuFrameWorkException(
+                            $"'{roleName}' rolü sistemde bulunamadı",
+                            "ROLE_NOT_FOUND",
+                            "ValidationError"
                         );
                     }
-                }
-                else
-                {
-                    // Varsayılan olarak "USER" rolünü ata
-                    var defaultRole = await _roleRepository.GetByNameAsync("USER");
-                    if (defaultRole != null)
+
+                    // UserRole ilişkisini doğrudan ekle
+                    var userRole = new UserRole
                     {
-                        user.Roles = new List<Role> { defaultRole };
-                    }
+                        UserId = user.Id,
+                        RoleId = role.Id,
+                        CreatedDate = DateTime.UtcNow
+                    };
+
+                    _repository.Context.Set<UserRole>().Add(userRole);
+
+                    await _logService.CreateLog(
+                        "Rol Ataması",
+                        $"'{user.UserName}' kullanıcısına '{role.Name}' rolü atandı",
+                        "Create",
+                        "UserRole"
+                    );
                 }
 
-                await _repository.CreateAsync(user);
+                await _repository.Context.SaveChangesAsync(cancellationToken);
+                await transaction.CommitAsync(cancellationToken);
 
                 await _historyService.SaveHistory(user, "Create");
                 
@@ -127,6 +128,7 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.UserHandlers.Write
             }
             catch (Exception ex)
             {
+                await transaction.RollbackAsync(cancellationToken);
                 await _logService.CreateErrorLog(
                     ex,
                     "UserCreate",

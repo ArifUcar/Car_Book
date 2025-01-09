@@ -38,7 +38,7 @@ namespace UdemyCarBook.WebApi.Controllers
         public async Task<IActionResult> Create([FromBody] CreateRoleCommand command)
         {
             await _mediator.Send(command);
-            return Ok();
+            return Ok("Rol başarıyla oluşturuldu");
         }
 
         [HttpPut]

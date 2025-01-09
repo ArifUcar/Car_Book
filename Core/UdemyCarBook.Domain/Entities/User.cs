@@ -22,8 +22,9 @@ namespace UdemyCarBook.Domain.Entities
         public DateTime? LastLoginDate { get; set; }
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpireDate { get; set; }
-        public Guid? UpdatedByUserId { get; set; }
-        public Guid? LastModifiedByUserId { get; set; }
+
+        [JsonIgnore]
+        public virtual ICollection<UserRole> UserRoles { get; set; }
 
         [JsonIgnore]
         public virtual ICollection<Role> Roles { get; set; }

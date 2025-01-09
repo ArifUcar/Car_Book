@@ -29,6 +29,8 @@ namespace UdemyCarBook.Persistance.Context
         public DbSet<Author> Authors { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<Log> Logs { get; set; }
+        public DbSet<Permission> Permissions { get; set; }
+        public DbSet<UserRole> UserRoles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -281,9 +283,44 @@ namespace UdemyCarBook.Persistance.Context
                 .HasForeignKey(r => r.LastModifiedByUserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Permission>()
+                .HasMany(p => p.Roles)
+                .WithMany(r => r.Permissions)
+                .UsingEntity(j => j.ToTable("RolePermissions"));
+
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
             base.OnModelCreating(modelBuilder);
+
+            // User-Role ilişkisi
+            modelBuilder.Entity<UserRole>(entity =>
+            {
+                entity.ToTable("UserRoles");
+                
+                entity.HasKey(ur => new { ur.UserId, ur.RoleId });
+
+                entity.HasOne(ur => ur.User)
+                    .WithMany(u => u.UserRoles)
+                    .HasForeignKey(ur => ur.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(ur => ur.Role)
+                    .WithMany(r => r.UserRoles)
+                    .HasForeignKey(ur => ur.RoleId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Roles)
+                .WithMany(r => r.Users)
+                .UsingEntity<UserRole>(
+                    j => j.HasOne(ur => ur.Role)
+                        .WithMany()
+                        .HasForeignKey(ur => ur.RoleId),
+                    j => j.HasOne(ur => ur.User)
+                        .WithMany()
+                        .HasForeignKey(ur => ur.UserId)
+                );
         }
     }
 }

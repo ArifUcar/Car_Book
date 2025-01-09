@@ -8,5 +8,6 @@ namespace UdemyCarBook.Application.Features.Mediator.Commands.RoleCommands
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
+        public string Description { get; set; }
     }
 } 

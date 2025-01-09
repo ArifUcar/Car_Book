@@ -1,47 +1,70 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using UdemyCarBook.Application.Attributes;
+using System.Security.Claims;
 using UdemyCarBook.Application.Features.Mediator.Commands.UserCommands;
 using UdemyCarBook.Application.Features.Mediator.Queries.UserQueries;
-using UdemyCarBook.Application.Features.Mediator.Results.UserResults;
+using UdemyCarBook.Application.Interfaces.IService;
 
 namespace UdemyCarBook.WebApi.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly IPermissionAuthorizationService _permissionAuthorizationService;
 
-        public UsersController(IMediator mediator)
+        public UsersController(IMediator mediator, IPermissionAuthorizationService permissionAuthorizationService)
         {
             _mediator = mediator;
+            _permissionAuthorizationService = permissionAuthorizationService;
         }
 
         [HttpGet]
-        [Authorize(Roles = "ADMIN")]
+        [Authorize]
         public async Task<IActionResult> GetAll()
         {
-            var values = await _mediator.Send(new GetUserQuery());
-            return Ok(values);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+            {
+                return Unauthorized();
+            }
+
+            if (!await _permissionAuthorizationService.HasPermissionAsync(userGuid, "VIEW_ALL_USERS"))
+            {
+                return Forbid();
+            }
+
+            var result = await _mediator.Send(new GetUserQuery());
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "ADMIN")]
+        [Authorize]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var value = await _mediator.Send(new GetUserByIdQuery(id));
-            return Ok(value);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+            {
+                return Unauthorized();
+            }
+
+            if (!await _permissionAuthorizationService.HasPermissionAsync(userGuid, "VIEW_ALL_USERS"))
+            {
+                return Forbid();
+            }
+
+            var result = await _mediator.Send(new GetUserByIdQuery(id));
+            return Ok(result);
         }
 
         [HttpPost]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<IActionResult> Create([FromBody] CreateUserCommand command)
         {
             await _mediator.Send(command);
-            return Ok("Kullanıcı başarıyla oluşturuldu");
+            return Ok();
         }
 
         [HttpPut]

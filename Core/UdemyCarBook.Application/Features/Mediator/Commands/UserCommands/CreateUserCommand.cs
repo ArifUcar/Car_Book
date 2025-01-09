@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using MediatR;
 using UdemyCarBook.Domain.Enums;
-using System.Text.Json.Serialization;
 
 namespace UdemyCarBook.Application.Features.Mediator.Commands.UserCommands
 {
@@ -51,7 +50,6 @@ namespace UdemyCarBook.Application.Features.Mediator.Commands.UserCommands
         /// <summary>
         /// Kullanıcı rolleri
         /// </summary>
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public List<string> Roles { get; set; } = new List<string>();
+        public List<string> Roles { get; set; } = new List<string> { "USER" };
     }
 } 

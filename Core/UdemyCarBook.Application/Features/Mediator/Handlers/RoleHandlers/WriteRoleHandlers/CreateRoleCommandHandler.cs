@@ -48,9 +48,13 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.RoleHandlers.Write
                 {
                     Id = Guid.NewGuid(),
                     Name = request.Name,
+                    Description = request.Description,
                     CreatedById = currentUser.Id,
                     CreatedDate = DateTime.UtcNow,
-                    IsDeleted = false
+                    IsDeleted = false,
+                    IsActive = true,
+                    UpdatedByUserId = null,
+                    LastModifiedByUserId = null
                 };
 
                 await _repository.CreateAsync(role);

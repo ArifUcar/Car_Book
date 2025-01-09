@@ -16,6 +16,8 @@ using UdemyCarBook.Application.Tools;
 using Microsoft.OpenApi.Models;
 using MediatR;
 using UdemyCarBook.Application.Features.Mediator.Commands.UserCommands;
+using UdemyCarBook.Application.Features.Mediator.Commands.PermissionCommands;
+using UdemyCarBook.Application.Features.Mediator.Queries.PermissionQueries;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -79,6 +81,8 @@ builder.Services.AddDbContext<NewsContext>(options =>
 builder.Services.AddScoped<ILogService, LogService>();
 builder.Services.AddScoped<IHistoryService, HistoryService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IPermissionAuthorizationService, PermissionAuthorizationService>();
+builder.Services.AddScoped<IPermissionLogService, PermissionLogService>();
 
 // Repository registrations
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
@@ -86,7 +90,7 @@ builder.Services.AddScoped<INewsletterRepository, NewsletterRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
-
+builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
 builder.Services.AddScoped<INewsRepository, NewsRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();

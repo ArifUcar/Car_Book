@@ -10,26 +10,12 @@ namespace UdemyCarBook.Domain.Entities
 {
     public class Log
     {
-       
-            [Key]
-            [Column(TypeName = "char(36)")]
-            public Guid Id { get; set; }
-
-            [Required]
-            [StringLength(100)]
-            public string Title { get; set; }
-
-            public string Description { get; set; }
-
-            [Required]
-            [StringLength(50)]
-            public string ProcessType { get; set; }
-
-            [Required]
-            [StringLength(100)]
-            public string ProcessLocation { get; set; }
-
-            public DateTime CreatedDate { get; set; }
-        }
+        public Guid Id { get; set; }
+        public string Title { get; set; }
+        public string Message { get; set; }
+        public string Type { get; set; }
+        public string Location { get; set; }
+        public DateTime CreatedDate { get; set; }
     }
+}
 

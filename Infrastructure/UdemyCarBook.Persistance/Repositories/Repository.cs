@@ -18,40 +18,38 @@ namespace UdemyCarBook.Persistance.Repositories
         public Repository(NewsContext context)
         {
             _context = context;
-            _dbSet = context.Set<T>();  // Constructor'da initialize ediyoruz
+            _dbSet = context.Set<T>();
         }
          
-        public async Task CreateAsync(T entity)
+        public virtual async Task CreateAsync(T entity)
         {
             _context.Set<T>().Add(entity); 
-            
-             await _context.SaveChangesAsync();
-        }
-
-
-        public async Task RemoveAsync(T entity)
-        {
-             _context.Set<T>().Remove(entity);
             await _context.SaveChangesAsync();
-
         }
 
-        public async Task UpdateAsync(T entity)
+        public virtual async Task RemoveAsync(T entity)
+        {
+            _context.Set<T>().Remove(entity);
+            await _context.SaveChangesAsync();
+        }
+
+        public virtual async Task UpdateAsync(T entity)
         {
             _context.Set<T>().Update(entity);
             await _context.SaveChangesAsync();
         }
-        public async Task<List<T>> GetAllAsync()
+
+        public virtual async Task<List<T>> GetAllAsync()
         {
             return await _context.Set<T>().ToListAsync();
         }
 
-        public async Task<T> GetByIdAsync(Guid id)
+        public virtual async Task<T> GetByIdAsync(Guid id)
         {
             return await _context.Set<T>().FindAsync(id);
         }
 
-        public async Task SoftDeleteAsync(Guid id)
+        public virtual async Task SoftDeleteAsync(Guid id)
         {
             var entity = await _dbSet.FindAsync(id);
             if (entity != null)
@@ -65,7 +63,7 @@ namespace UdemyCarBook.Persistance.Repositories
             }
         }
 
-        public Task<T> GetFirstOrDefaultAsync(Expression<Func<T, bool>> filter)
+        public virtual Task<T> GetFirstOrDefaultAsync(Expression<Func<T, bool>> filter)
         {
             throw new NotImplementedException();
         }
