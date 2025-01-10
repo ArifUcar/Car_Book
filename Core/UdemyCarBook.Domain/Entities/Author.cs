@@ -12,6 +12,7 @@ namespace UdemyCarBook.Domain.Entities
         public string Email { get; set; }
         public string Description { get; set; }
         public string ImageUrl { get; set; }
+        public bool IsActive { get; set; }
 
         // Navigation Properties
         public virtual ICollection<News> News { get; set; }
@@ -30,6 +31,7 @@ namespace UdemyCarBook.Domain.Entities
         {
             News = new HashSet<News>();
             SocialMediaAccounts = new HashSet<SocialMedia>();
+            IsActive = true;
         }
 
         public string FullName => $"{FirstName} {LastName}";

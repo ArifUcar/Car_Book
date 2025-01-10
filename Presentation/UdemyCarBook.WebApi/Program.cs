@@ -7,7 +7,7 @@ using UdemyCarBook.Persistance.Service;
 using UdemyCarBook.Application.Interfaces.IService;
 using UdemyCarBook.WebApi.Middleware;
 using Microsoft.EntityFrameworkCore;
-using UdemyCarBook.Persistence.Repositories;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;

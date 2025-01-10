@@ -1,17 +1,16 @@
 using MediatR;
-using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using UdemyCarBook.Application.Features.Mediator.Queries.NewsQueries;
 using UdemyCarBook.Application.Features.Mediator.Results.NewsResults;
 using UdemyCarBook.Application.Interfaces;
-using UdemyCarBook.Domain.Entities;
 using UdemyCarBook.Domain.Exceptions;
-using System.Linq;
 
 namespace UdemyCarBook.Application.Features.Mediator.Handlers.NewsHandlers.ReadNewsHandlers
 {
-    public class GetNewsByIdQueryHandler : IRequestHandler<GetNewsByIdQuery, GetNewsByIdQueryResult>
+    public class GetNewsByIdQueryHandler : IRequestHandler<GetNewsByIdQuery, GetNewsQueryResult>
     {
         private readonly INewsRepository _repository;
 
@@ -20,31 +19,39 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.NewsHandlers.ReadN
             _repository = repository;
         }
 
-        public async Task<GetNewsByIdQueryResult> Handle(GetNewsByIdQuery request, CancellationToken cancellationToken)
+        public async Task<GetNewsQueryResult> Handle(GetNewsByIdQuery request, CancellationToken cancellationToken)
         {
             var news = await _repository.GetByIdWithDetailsAsync(request.Id);
-
             if (news == null)
                 throw new AuFrameWorkException("Haber bulunamadı", "NEWS_NOT_FOUND", "NotFound");
 
-            return new GetNewsByIdQueryResult
+            return new GetNewsQueryResult
             {
                 Id = news.Id,
                 Title = news.Title,
                 Content = news.Content,
-                PublishDate = news.PublishDate,
-                CategoryId = news.CategoryId,
-                CategoryName = news.Category.Name,
-                AuthorId = news.AuthorId,
-                AuthorName = news.Author.FirstName,
-                ImageUrl = news.ImageUrl,
                 Summary = news.Summary,
+                Slug = news.Slug,
+                CoverImageUrl = news.CoverImageUrl,
                 ViewCount = news.ViewCount,
-                Status = news.Status,
-                Tags = news.Tags.Select(t => t.Name).ToList(),
+                IsFeatured = news.IsFeatured,
+                IsActive = news.IsActive,
+                IsPublished = news.IsPublished,
+                PublishDate = news.PublishDate,
                 CreatedDate = news.CreatedDate,
-                CreatedByUserName = news.CreatedByUser?.UserName,
                 LastModifiedDate = news.LastModifiedDate,
+                MetaTitle = news.MetaTitle,
+                MetaDescription = news.MetaDescription,
+                MetaKeywords = news.MetaKeywords,
+                CategoryId = news.CategoryId,
+                CategoryName = news.Category?.Name,
+                AuthorId = news.AuthorId,
+                AuthorName = news.Author?.FullName,
+                AuthorImageUrl = news.Author?.ImageUrl,
+                Status = news.Status.ToString(),
+                CommentCount = news.Comments?.Count ?? 0,
+                Tags = news.Tags?.Select(t => t.Name).ToList() ?? new List<string>(),
+                CreatedByUserName = news.CreatedByUser?.UserName,
                 LastModifiedByUserName = news.LastModifiedByUser?.UserName
             };
         }
