@@ -17,8 +17,8 @@ namespace UdemyCarBook.Application.Tools
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.UserName),
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.GivenName, user.FirstName),
-                new Claim(ClaimTypes.Surname, user.LastName),
+                new Claim(ClaimTypes.GivenName, user.FirstName ?? string.Empty),
+                new Claim(ClaimTypes.Surname, user.LastName ?? string.Empty),
                 new Claim("UserType", user.UserType.ToString())
             };
 
@@ -26,7 +26,10 @@ namespace UdemyCarBook.Application.Tools
             {
                 foreach (var role in user.Roles)
                 {
-                    claims.Add(new Claim(ClaimTypes.Role, role.Name));
+                    if (role.IsActive && !role.IsDeleted)
+                    {
+                        claims.Add(new Claim(ClaimTypes.Role, role.Name));
+                    }
                 }
             }
 
@@ -45,19 +48,19 @@ namespace UdemyCarBook.Application.Tools
 
             var tokenHandler = new JwtSecurityTokenHandler();
 
+            // Aktif rolleri al
+            var roles = user.Roles?
+                .Where(r => r.IsActive && !r.IsDeleted)
+                .Select(r => r.Name)
+                .ToList() ?? new List<string>();
+
             return new TokenResponseDto
             {
                 Token = tokenHandler.WriteToken(token),
-                ExpireDate = expireDate,
-                UserName = user.UserName
+                Expiration = expireDate,
+                RefreshToken = Guid.NewGuid().ToString(),
+                Roles = roles
             };
         }
-    }
-
-    public class TokenResponseDto
-    {
-        public string Token { get; set; }
-        public DateTime ExpireDate { get; set; }
-        public string UserName { get; set; }
     }
 } 

@@ -14,49 +14,116 @@ namespace UdemyCarBook.WebApi.Controllers
     {
         private readonly IMediator _mediator;
         private readonly IPermissionAuthorizationService _permissionAuthorizationService;
+        private readonly ILogService _logService;
 
-        public UsersController(IMediator mediator, IPermissionAuthorizationService permissionAuthorizationService)
+        public UsersController(
+            IMediator mediator, 
+            IPermissionAuthorizationService permissionAuthorizationService,
+            ILogService logService)
         {
             _mediator = mediator;
             _permissionAuthorizationService = permissionAuthorizationService;
+            _logService = logService;
         }
 
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> GetAll()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+            try 
             {
-                return Unauthorized();
-            }
+                // Kullanıcı bilgilerini logla
+                var claims = User.Claims.Select(c => $"{c.Type}: {c.Value}");
+                await _logService.CreateLog(
+                    "Yetki Kontrolü",
+                    $"Kullanıcı Claims: {string.Join(", ", claims)}",
+                    "Debug",
+                    "Authorization"
+                );
 
-            if (!await _permissionAuthorizationService.HasPermissionAsync(userGuid, "VIEW_ALL_USERS"))
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+                {
+                    await _logService.CreateLog(
+                        "Yetki Hatası",
+                        "Geçersiz kullanıcı ID",
+                        "Error",
+                        "Authorization"
+                    );
+                    return Unauthorized();
+                }
+
+                // İzin kontrolünü logla
+                var hasPermission = await _permissionAuthorizationService.HasPermissionAsync(userGuid, "USR_VIEW_ALL");
+                await _logService.CreateLog(
+                    "İzin Kontrolü",
+                    $"Kullanıcı ID: {userGuid}, İzin: USR_VIEW_ALL, Sonuç: {hasPermission}",
+                    "Debug",
+                    "Authorization"
+                );
+
+                if (!hasPermission)
+                {
+                    return Forbid();
+                }
+
+                var result = await _mediator.Send(new GetUserQuery());
+                return Ok(result);
+            }
+            catch (Exception ex)
             {
-                return Forbid();
+                await _logService.CreateErrorLog(
+                    ex,
+                    "GetAllUsers",
+                    "Kullanıcılar listelenirken hata oluştu"
+                );
+                throw;
             }
-
-            var result = await _mediator.Send(new GetUserQuery());
-            return Ok(result);
         }
 
         [HttpGet("{id}")]
         [Authorize]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+            try
             {
-                return Unauthorized();
-            }
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (string.IsNullOrEmpty(userId) || !Guid.TryParse(userId, out var userGuid))
+                {
+                    await _logService.CreateLog(
+                        "Yetki Hatası",
+                        "Geçersiz kullanıcı ID",
+                        "Error",
+                        "Authorization"
+                    );
+                    return Unauthorized();
+                }
 
-            if (!await _permissionAuthorizationService.HasPermissionAsync(userGuid, "VIEW_ALL_USERS"))
+                var hasPermission = await _permissionAuthorizationService.HasPermissionAsync(userGuid, "USR_VIEW_ALL");
+                await _logService.CreateLog(
+                    "İzin Kontrolü",
+                    $"Kullanıcı ID: {userGuid}, İzin: USR_VIEW_ALL, Sonuç: {hasPermission}",
+                    "Debug",
+                    "Authorization"
+                );
+
+                if (!hasPermission)
+                {
+                    return Forbid();
+                }
+
+                var result = await _mediator.Send(new GetUserByIdQuery(id));
+                return Ok(result);
+            }
+            catch (Exception ex)
             {
-                return Forbid();
+                await _logService.CreateErrorLog(
+                    ex,
+                    "GetUserById",
+                    "Kullanıcı detayı görüntülenirken hata oluştu"
+                );
+                throw;
             }
-
-            var result = await _mediator.Send(new GetUserByIdQuery(id));
-            return Ok(result);
         }
 
         [HttpPost]

@@ -1,5 +1,6 @@
 using MediatR;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using UdemyCarBook.Application.Features.Mediator.Commands.AuthCommands;
@@ -43,6 +44,14 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.AuthHandlers
 
             user.LastLoginDate = DateTime.UtcNow;
             await _userRepository.UpdateAsync(user);
+
+            // Kullanıcının rollerini al
+            var roles = user.Roles?.Where(r => r.IsActive && !r.IsDeleted)
+                                 .Select(r => r.Name)
+                                 .ToList() ?? new List<string>();
+
+            // Token yanıtına rolleri ekle
+            token.Roles = roles;
 
             return token;
         }
