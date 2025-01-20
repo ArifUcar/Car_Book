@@ -4,60 +4,112 @@ using System.Threading;
 using System.Threading.Tasks;
 using UdemyCarBook.Application.Features.Mediator.Commands.NewsCommands;
 using UdemyCarBook.Application.Interfaces;
+using UdemyCarBook.Application.Interfaces.IService;
 using UdemyCarBook.Domain.Entities;
+using UdemyCarBook.Domain.Exceptions;
 
 namespace UdemyCarBook.Application.Features.Mediator.Handlers.NewsHandlers.WriteNewsHandlers
 {
     public class CreateNewsCommandHandler : IRequestHandler<CreateNewsCommand, Unit>
     {
         private readonly INewsRepository _newsRepository;
-        private readonly IRepository<Tag> _tagRepository;
+        private readonly IHistoryService _historyService;
+        private readonly ILogService _logService;
+        private readonly IUserService _userService;
+        private readonly IPermissionAuthorizationService _permissionAuthorizationService;
+        private readonly IImageUploadService _imageUploadService;
 
         public CreateNewsCommandHandler(
             INewsRepository newsRepository,
-            IRepository<Tag> tagRepository)
+            IHistoryService historyService,
+            ILogService logService,
+            IUserService userService,
+            IPermissionAuthorizationService permissionAuthorizationService,
+            IImageUploadService imageUploadService)
         {
             _newsRepository = newsRepository;
-            _tagRepository = tagRepository;
+            _historyService = historyService;
+            _logService = logService;
+            _userService = userService;
+            _permissionAuthorizationService = permissionAuthorizationService;
+            _imageUploadService = imageUploadService;
         }
 
         public async Task<Unit> Handle(CreateNewsCommand request, CancellationToken cancellationToken)
         {
-            var news = new News
+            try
             {
-                Title = request.Title,
-                Content = request.Content,
-                Summary = request.Summary,
-                Slug = request.Slug,
-                CoverImageUrl = request.CoverImageUrl,
-                IsFeatured = request.IsFeatured,
-                IsActive = request.IsActive,
-                IsPublished = request.IsPublished,
-                PublishDate = request.PublishDate,
-                MetaTitle = request.MetaTitle,
-                MetaDescription = request.MetaDescription,
-                MetaKeywords = request.MetaKeywords,
-                CategoryId = request.CategoryId,
-                AuthorId = request.AuthorId,
-                CreatedDate = DateTime.UtcNow,
-                CreatedById = request.CreatedById
-            };
-
-            // Tag'leri ekle
-            if (request.TagIds != null)
-            {
-                foreach (var tagId in request.TagIds)
+                var userId = await _userService.GetCurrentUserIdAsync();
+                if (!await _permissionAuthorizationService.HasPermissionAsync(userId, "NEWS_CREATE"))
                 {
-                    var tag = await _tagRepository.GetByIdAsync(tagId);
-                    if (tag != null)
+                    await _logService.CreateLog(
+                        "Yetki Hatası",
+                        $"Kullanıcı ID: {userId}, İzin: NEWS_CREATE, İşlem: Haber Oluşturma",
+                        "Error",
+                        "Authorization"
+                    );
+                    throw new AuFrameWorkException("Yetkiniz yok", "PERMISSION_DENIED", "Authorization");
+                }
+
+                string coverImageUrl = null;
+                if (!string.IsNullOrEmpty(request.CoverImageBase64))
+                {
+                    coverImageUrl = await _imageUploadService.UploadImageAsync(request.CoverImageBase64, "news");
+                    if (coverImageUrl == null)
                     {
-                        news.Tags.Add(tag);
+                        throw new AuFrameWorkException(
+                            "Resim yüklenirken bir hata oluştu",
+                            "IMAGE_UPLOAD_ERROR",
+                            "Error"
+                        );
                     }
                 }
-            }
 
-            await _newsRepository.CreateAsync(news);
-            return Unit.Value;
+                var news = new News
+                {
+                    Title = request.Title,
+                    Content = request.Content,
+                    Summary = request.Summary,
+                    Slug = request.Slug,
+                    CoverImageUrl = coverImageUrl,
+                    IsFeatured = request.IsFeatured,
+                    IsActive = request.IsActive,
+                    IsPublished = request.IsPublished,
+                    PublishDate = request.PublishDate,
+                    MetaTitle = request.MetaTitle,
+                    MetaDescription = request.MetaDescription,
+                    MetaKeywords = request.MetaKeywords,
+                    CategoryId = request.CategoryId,
+                    AuthorId = request.AuthorId,
+                    CreatedDate = DateTime.UtcNow,
+                    CreatedById = userId
+                };
+
+                await _newsRepository.CreateAsync(news);
+                await _historyService.SaveHistory(news, "Create");
+
+                await _logService.CreateLog(
+                    "Haber Oluşturuldu",
+                    $"Kullanıcı ID: {userId}, Başlık: {request.Title}",
+                    "Information",
+                    "News"
+                );
+
+                return Unit.Value;
+            }
+            catch (Exception ex) when (ex is not AuFrameWorkException)
+            {
+                await _logService.CreateErrorLog(
+                    ex,
+                    "CreateNews",
+                    "Haber oluşturulurken hata oluştu"
+                );
+                throw new AuFrameWorkException(
+                    "Haber oluşturulurken bir hata oluştu",
+                    "CREATE_ERROR",
+                    "Error"
+                );
+            }
         }
     }
 } 

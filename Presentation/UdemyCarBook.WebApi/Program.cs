@@ -100,6 +100,7 @@ builder.Services.AddScoped<IContactRepository, ContactRepository>();
 builder.Services.AddApplicationService(builder.Configuration);
 
 builder.Services.AddScoped<IPasswordHashService, PasswordHashService>();
+builder.Services.AddScoped<IImageUploadService, ImageUploadService>();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -160,6 +161,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseExceptionMiddleware();
 app.UseHttpsRedirection();
+
+app.UseStaticFiles();
 
 // CORS middleware'i authentication'dan önce gelmeli
 app.UseCors("AllowAllOrigins");

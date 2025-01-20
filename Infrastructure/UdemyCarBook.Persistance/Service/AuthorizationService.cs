@@ -30,7 +30,7 @@ namespace UdemyCarBook.Persistance.Service
                 return false;
 
             return user.Roles.Any(r => r.IsActive && !r.IsDeleted &&
-                r.Permissions.Any(p => p.Code == permissionCode && p.IsActive && !p.IsDeleted));
+                r.Permissions.Any(p =>p.Code == permissionCode && p.IsActive && !p.IsDeleted));
         }
 
         public async Task<bool> HasAnyPermissionAsync(Guid userId, params string[] permissionCodes)

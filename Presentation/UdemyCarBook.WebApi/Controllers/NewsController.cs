@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using UdemyCarBook.Application.Features.Mediator.Commands.NewsCommands;
 using UdemyCarBook.Application.Features.Mediator.Queries.NewsQueries;
 using UdemyCarBook.Application.Interfaces.IService;
+using UdemyCarBook.Domain.Exceptions;
 
 namespace UdemyCarBook.WebApi.Controllers
 {
@@ -74,36 +75,20 @@ namespace UdemyCarBook.WebApi.Controllers
             {
                 var userId = await _userService.GetCurrentUserIdAsync();
                 if (!await _permissionAuthorizationService.HasPermissionAsync(userId, "NEWS_CREATE"))
-                {
-                    await _logService.CreateLog(
-                        "Yetki Hatası",
-                        $"Kullanıcı ID: {userId}, İzin: NEWS_CREATE, İşlem: Haber Oluşturma",
-                        "Error",
-                        "Authorization"
-                    );
                     return Forbid();
-                }
 
-                command.CreatedById = userId;
                 await _mediator.Send(command);
-                
-                await _logService.CreateLog(
-                    "Haber Oluşturuldu",
-                    $"Kullanıcı ID: {userId}, Başlık: {command.Title}",
-                    "Information",
-                    "News"
-                );
-
                 return Ok("Haber başarıyla oluşturuldu");
             }
-            catch (Exception ex)
+            catch (AuFrameWorkException ex)
             {
-                await _logService.CreateErrorLog(
-                    ex,
-                    "CreateNews",
-                    "Haber oluşturulurken hata oluştu"
+                await _logService.CreateLog(
+                    "Hata",
+                    $"Haber oluşturulurken hata: {ex.Message}",
+                    "Error",
+                    "News"
                 );
-                throw;
+                return StatusCode(500, new { ErrorCode = ex.ErrorCode, Message = ex.Message });
             }
         }
 
@@ -115,36 +100,20 @@ namespace UdemyCarBook.WebApi.Controllers
             {
                 var userId = await _userService.GetCurrentUserIdAsync();
                 if (!await _permissionAuthorizationService.HasPermissionAsync(userId, "NEWS_UPDATE"))
-                {
-                    await _logService.CreateLog(
-                        "Yetki Hatası",
-                        $"Kullanıcı ID: {userId}, İzin: NEWS_UPDATE, İşlem: Haber Güncelleme",
-                        "Error",
-                        "Authorization"
-                    );
                     return Forbid();
-                }
 
-                command.LastModifiedById = userId;
                 await _mediator.Send(command);
-
-                await _logService.CreateLog(
-                    "Haber Güncellendi",
-                    $"Kullanıcı ID: {userId}, Haber ID: {command.Id}",
-                    "Information",
-                    "News"
-                );
-
                 return Ok("Haber başarıyla güncellendi");
             }
-            catch (Exception ex)
+            catch (AuFrameWorkException ex)
             {
-                await _logService.CreateErrorLog(
-                    ex,
-                    "UpdateNews",
-                    "Haber güncellenirken hata oluştu"
+                await _logService.CreateLog(
+                    "Hata",
+                    $"Haber güncellenirken hata: {ex.Message}",
+                    "Error",
+                    "News"
                 );
-                throw;
+                return StatusCode(500, new { ErrorCode = ex.ErrorCode, Message = ex.Message });
             }
         }
 
@@ -156,36 +125,21 @@ namespace UdemyCarBook.WebApi.Controllers
             {
                 var userId = await _userService.GetCurrentUserIdAsync();
                 if (!await _permissionAuthorizationService.HasPermissionAsync(userId, "NEWS_DELETE"))
-                {
-                    await _logService.CreateLog(
-                        "Yetki Hatası",
-                        $"Kullanıcı ID: {userId}, İzin: NEWS_DELETE, İşlem: Haber Silme",
-                        "Error",
-                        "Authorization"
-                    );
                     return Forbid();
-                }
 
-                var command = new SoftDeleteNewsCommand { Id = id, LastModifiedById = userId };
+                var command = new SoftDeleteNewsCommand { Id = id };
                 await _mediator.Send(command);
-
-                await _logService.CreateLog(
-                    "Haber Silindi",
-                    $"Kullanıcı ID: {userId}, Haber ID: {id}",
-                    "Information",
-                    "News"
-                );
-
                 return Ok("Haber başarıyla silindi");
             }
-            catch (Exception ex)
+            catch (AuFrameWorkException ex)
             {
-                await _logService.CreateErrorLog(
-                    ex,
-                    "DeleteNews",
-                    "Haber silinirken hata oluştu"
+                await _logService.CreateLog(
+                    "Hata",
+                    $"Haber silinirken hata: {ex.Message}",
+                    "Error",
+                    "News"
                 );
-                throw;
+                return StatusCode(500, new { ErrorCode = ex.ErrorCode, Message = ex.Message });
             }
         }
 

@@ -33,6 +33,36 @@ namespace UdemyCarBook.Domain.Entities
         public string CoverImageUrl { get; set; }
 
         /// <summary>
+        /// Kapak resmi dosya adı
+        /// </summary>
+        public string CoverImageFileName { get; set; }
+
+        /// <summary>
+        /// Kapak resmi MIME tipi
+        /// </summary>
+        public string CoverImageContentType { get; set; }
+
+        /// <summary>
+        /// Kapak resmi boyutu (byte)
+        /// </summary>
+        public long? CoverImageSize { get; set; }
+
+        /// <summary>
+        /// Kapak resmi genişliği (px)
+        /// </summary>
+        public int? CoverImageWidth { get; set; }
+
+        /// <summary>
+        /// Kapak resmi yüksekliği (px)
+        /// </summary>
+        public int? CoverImageHeight { get; set; }
+
+        /// <summary>
+        /// Kapak resmi yükleme tarihi
+        /// </summary>
+        public DateTime? CoverImageUploadDate { get; set; }
+
+        /// <summary>
         /// Görüntülenme sayısı
         /// </summary>
         public int ViewCount { get; set; }
@@ -110,6 +140,33 @@ namespace UdemyCarBook.Domain.Entities
             IsActive = true;
             Status = NewsStatus.Draft;
             CreatedDate = DateTime.UtcNow;
+        }
+
+        /// <summary>
+        /// Resim bilgilerini günceller
+        /// </summary>
+        public void UpdateImageInfo(string fileName, string contentType, long size, int width, int height)
+        {
+            CoverImageFileName = fileName;
+            CoverImageContentType = contentType;
+            CoverImageSize = size;
+            CoverImageWidth = width;
+            CoverImageHeight = height;
+            CoverImageUploadDate = DateTime.UtcNow;
+        }
+
+        /// <summary>
+        /// Resim bilgilerini temizler
+        /// </summary>
+        public void ClearImageInfo()
+        {
+            CoverImageUrl = null;
+            CoverImageFileName = null;
+            CoverImageContentType = null;
+            CoverImageSize = null;
+            CoverImageWidth = null;
+            CoverImageHeight = null;
+            CoverImageUploadDate = null;
         }
     }
 

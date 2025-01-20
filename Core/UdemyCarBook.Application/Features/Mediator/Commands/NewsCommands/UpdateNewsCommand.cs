@@ -11,7 +11,7 @@ namespace UdemyCarBook.Application.Features.Mediator.Commands.NewsCommands
         public string Content { get; set; }
         public string Summary { get; set; }
         public string Slug { get; set; }
-        public string CoverImageUrl { get; set; }
+        public string CoverImageBase64 { get; set; }
         public bool IsFeatured { get; set; }
         public bool IsActive { get; set; }
         public bool IsPublished { get; set; }
