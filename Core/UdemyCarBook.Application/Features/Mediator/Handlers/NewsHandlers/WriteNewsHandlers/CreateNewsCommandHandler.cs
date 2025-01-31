@@ -18,6 +18,7 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.NewsHandlers.Write
         private readonly IUserService _userService;
         private readonly IPermissionAuthorizationService _permissionAuthorizationService;
         private readonly IImageUploadService _imageUploadService;
+        private readonly IRepository<Category> _categoryRepository;
 
         public CreateNewsCommandHandler(
             INewsRepository newsRepository,
@@ -25,7 +26,8 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.NewsHandlers.Write
             ILogService logService,
             IUserService userService,
             IPermissionAuthorizationService permissionAuthorizationService,
-            IImageUploadService imageUploadService)
+            IImageUploadService imageUploadService,
+            IRepository<Category> categoryRepository)
         {
             _newsRepository = newsRepository;
             _historyService = historyService;
@@ -33,6 +35,7 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.NewsHandlers.Write
             _userService = userService;
             _permissionAuthorizationService = permissionAuthorizationService;
             _imageUploadService = imageUploadService;
+            _categoryRepository = categoryRepository;
         }
 
         public async Task<Unit> Handle(CreateNewsCommand request, CancellationToken cancellationToken)
@@ -49,6 +52,17 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.NewsHandlers.Write
                         "Authorization"
                     );
                     throw new AuFrameWorkException("Yetkiniz yok", "PERMISSION_DENIED", "Authorization");
+                }
+
+                // Kategori kontrolü
+                var category = await _categoryRepository.GetByIdAsync(request.CategoryId);
+                if (category == null)
+                {
+                    throw new AuFrameWorkException(
+                        "Belirtilen kategori bulunamadı",
+                        "CATEGORY_NOT_FOUND",
+                        "NotFound"
+                    );
                 }
 
                 string coverImageUrl = null;
@@ -80,9 +94,11 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.NewsHandlers.Write
                     MetaDescription = request.MetaDescription,
                     MetaKeywords = request.MetaKeywords,
                     CategoryId = request.CategoryId,
-                    AuthorId = request.AuthorId,
+                    UserId = userId,
                     CreatedDate = DateTime.UtcNow,
-                    CreatedById = userId
+                    CreatedById = userId,
+                    LastModifiedDate = DateTime.UtcNow,
+                    LastModifiedByUserId = userId
                 };
 
                 await _newsRepository.CreateAsync(news);

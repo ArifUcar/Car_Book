@@ -33,7 +33,7 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.SocialMediaHandler
                 IsActive = x.IsActive,
                 FollowerCount = x.FollowerCount,
                 AccountName = x.AccountName,
-                AuthorName = x.Author?.FirstName,
+                AuthorName = x.User?.FirstName,
                 CreatedDate = x.CreatedDate,
                 CreatedByUserName = x.CreatedByUser != null ? x.CreatedByUser.UserName : null
             }).ToList();

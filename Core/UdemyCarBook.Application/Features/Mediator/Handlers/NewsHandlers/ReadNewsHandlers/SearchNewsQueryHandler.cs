@@ -38,7 +38,7 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.NewsHandlers.ReadN
 
             if (!string.IsNullOrEmpty(request.AuthorName))
             {
-                query = query.Where(x => x.Author.FullName.ToLower().Contains(request.AuthorName.ToLower()));
+                query = query.Where(x => x.User.FullName.ToLower().Contains(request.AuthorName.ToLower()));
             }
 
             if (!string.IsNullOrEmpty(request.Tag))
@@ -88,9 +88,9 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.NewsHandlers.ReadN
                 MetaKeywords = x.MetaKeywords,
                 CategoryId = x.CategoryId,
                 CategoryName = x.Category?.Name,
-                AuthorId = x.AuthorId,
-                AuthorName = x.Author?.FullName,
-                AuthorImageUrl = x.Author?.ImageUrl,
+                UserId = x.UserId,
+                UserName = x.User?.FullName,
+                UserImageUrl = x.User?.CoverImageUrl,
                 Status = x.Status.ToString(),
                 CommentCount = x.Comments?.Count ?? 0,
                 Tags = x.Tags?.Select(t => t.Name).ToList() ?? new List<string>(),

@@ -44,8 +44,8 @@ namespace UdemyCarBook.Domain.Entities
         /// <summary>
         /// İlişkili olduğu yazar (opsiyonel)
         /// </summary>
-        public Guid? AuthorId { get; set; }
-        public virtual Author? Author { get; set; }
+        public Guid? UserId { get; set; }
+        public virtual User? User { get; set; }
 
         [ForeignKey("CreatedById")]
         public virtual User CreatedByUser { get; set; }

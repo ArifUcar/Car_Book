@@ -19,7 +19,7 @@ namespace UdemyCarBook.Application.Features.Mediator.Commands.NewsCommands
         public string MetaDescription { get; set; }
         public string MetaKeywords { get; set; }
         public Guid CategoryId { get; set; }
-        public Guid AuthorId { get; set; }
+        public Guid UserId { get; set; }
         public List<Guid> TagIds { get; set; }
     }
 }

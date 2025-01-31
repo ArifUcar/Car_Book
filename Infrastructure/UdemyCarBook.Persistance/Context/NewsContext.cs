@@ -26,7 +26,7 @@ namespace UdemyCarBook.Persistance.Context
         public DbSet<Role> Roles { get; set; }
         public DbSet<Newsletter> Newsletters { get; set; }
         public DbSet<Contact> Contacts { get; set; }
-        public DbSet<Author> Authors { get; set; }
+        public DbSet<User> Authors { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<Log> Logs { get; set; }
         public DbSet<Permission> Permissions { get; set; }
@@ -69,6 +69,14 @@ namespace UdemyCarBook.Persistance.Context
                 .WithMany(u => u.UpdatedNews)
                 .HasForeignKey(n => n.UpdatedByUserId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<News>()
+                .HasOne(n => n.LastModifiedByUser)
+                .WithMany(u => u.LastModifiedNews)
+                .HasForeignKey(n => n.LastModifiedByUserId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.NoAction);
+
             modelBuilder.Entity<Role>(entity =>
             {
                 entity.HasOne(r => r.LastModifiedByUser)
@@ -145,25 +153,25 @@ namespace UdemyCarBook.Persistance.Context
                 entity.Ignore(u => u.UpdatedRecords);
             });
 
-            modelBuilder.Entity<Author>()
+           /* modelBuilder.Entity<User>()
                 .HasMany(a => a.News)
                 .WithOne(n => n.Author)
                 .HasForeignKey(n => n.AuthorId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Author>()
+            modelBuilder.Entity<User>()
                 .HasOne(a => a.CreatedByUser)
                 .WithMany(u => u.CreatedAuthors)
                 .HasForeignKey(a => a.CreatedById)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<Author>()
+            modelBuilder.Entity<User>()
                 .HasOne(a => a.UpdatedByUser)
                 .WithMany(u => u.UpdatedAuthors)
                 .HasForeignKey(a => a.UpdatedByUserId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.NoAction);*/
 
-            modelBuilder.Entity<Author>()
+            modelBuilder.Entity<User>()
                 .HasOne(a => a.LastModifiedByUser)
                 .WithMany()
                 .HasForeignKey(a => a.LastModifiedByUserId)
@@ -211,11 +219,11 @@ namespace UdemyCarBook.Persistance.Context
                 .HasForeignKey(c => c.UpdatedByUserId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<SocialMedia>()
-                .HasOne(s => s.Author)
+          /*  modelBuilder.Entity<SocialMedia>()
+                .HasOne(s => s.User)
                 .WithMany(a => a.SocialMediaAccounts)
                 .HasForeignKey(s => s.AuthorId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Cascade);*/
 
             modelBuilder.Entity<SocialMedia>()
                 .HasOne(s => s.CreatedByUser)
@@ -227,6 +235,12 @@ namespace UdemyCarBook.Persistance.Context
                 .HasOne(s => s.UpdatedByUser)
                 .WithMany(u => u.UpdatedSocialMedias)
                 .HasForeignKey(s => s.UpdatedByUserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<SocialMedia>()
+                .HasOne(s => s.LastModifiedByUser)
+                .WithMany(u => u.LastModifiedSocialMedias)
+                .HasForeignKey(s => s.LastModifiedByUserId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Tag>()

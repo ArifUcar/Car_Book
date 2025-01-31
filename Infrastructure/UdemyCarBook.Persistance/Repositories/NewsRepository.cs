@@ -22,7 +22,9 @@ namespace UdemyCarBook.Persistance.Repositories
         {
             return await _context.News
                 .Include(x => x.Category)
-                .Include(x => x.Author)
+                .Include(x => x.User)
+                .Include(x => x.CreatedByUser)
+                .Include(x => x.LastModifiedByUser)
                 .Include(x => x.Tags)
                 .Include(x => x.Comments)
                 .Where(x => !x.IsDeleted)
@@ -34,7 +36,9 @@ namespace UdemyCarBook.Persistance.Repositories
         {
             return await _context.News
                 .Include(x => x.Category)
-                .Include(x => x.Author)
+                .Include(x => x.User)
+                .Include(x => x.CreatedByUser)
+                .Include(x => x.LastModifiedByUser)
                 .Include(x => x.Tags)
                 .Include(x => x.Comments)
                 .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
@@ -44,20 +48,20 @@ namespace UdemyCarBook.Persistance.Repositories
         {
             return await _context.News
                 .Include(x => x.Category)
-                .Include(x => x.Author)
+                .Include(x => x.User)
                 .Include(x => x.Tags)
                 .Where(x => x.CategoryId == categoryId && !x.IsDeleted)
                 .OrderByDescending(x => x.CreatedDate)
                 .ToListAsync();
         }
 
-        public async Task<List<News>> GetNewsByAuthorAsync(Guid authorId)
+        public async Task<List<News>> GetNewsByUserAsync(Guid userId)
         {
             return await _context.News
                 .Include(x => x.Category)
-                .Include(x => x.Author)
+                .Include(x => x.User)
                 .Include(x => x.Tags)
-                .Where(x => x.AuthorId == authorId && !x.IsDeleted)
+                .Where(x => x.UserId == userId && !x.IsDeleted)
                 .OrderByDescending(x => x.CreatedDate)
                 .ToListAsync();
         }
@@ -66,7 +70,7 @@ namespace UdemyCarBook.Persistance.Repositories
         {
             return await _context.News
                 .Include(x => x.Category)
-                .Include(x => x.Author)
+                .Include(x => x.User)
                 .Include(x => x.Tags)
                 .Where(x => x.Tags.Any(t => t.Id == tagId) && !x.IsDeleted)
                 .OrderByDescending(x => x.CreatedDate)
@@ -77,9 +81,12 @@ namespace UdemyCarBook.Persistance.Repositories
         {
             return await _context.News
                 .Include(x => x.Category)
-                .Include(x => x.Author)
+                .Include(x => x.User)
                 .Include(x => x.Tags)
-                .Where(x => (x.Title.Contains(keyword) || x.Content.Contains(keyword)) && !x.IsDeleted)
+                .Where(x => !x.IsDeleted && 
+                    (x.Title.Contains(keyword) || 
+                    x.Content.Contains(keyword) || 
+                    x.Summary.Contains(keyword)))
                 .OrderByDescending(x => x.CreatedDate)
                 .ToListAsync();
         }
@@ -88,7 +95,7 @@ namespace UdemyCarBook.Persistance.Repositories
         {
             return await _context.News
                 .Include(x => x.Category)
-                .Include(x => x.Author)
+                .Include(x => x.User)
                 .Include(x => x.Tags)
                 .Where(x => !x.IsDeleted)
                 .OrderByDescending(x => x.CreatedDate)
@@ -100,7 +107,7 @@ namespace UdemyCarBook.Persistance.Repositories
         {
             return await _context.News
                 .Include(x => x.Category)
-                .Include(x => x.Author)
+                .Include(x => x.User)
                 .Include(x => x.Tags)
                 .Where(x => !x.IsDeleted)
                 .OrderByDescending(x => x.ViewCount)
@@ -112,7 +119,7 @@ namespace UdemyCarBook.Persistance.Repositories
         {
             return await _context.News
                 .Include(x => x.Category)
-                .Include(x => x.Author)
+                .Include(x => x.User)
                 .Include(x => x.Tags)
                 .Where(x => x.IsFeatured && !x.IsDeleted)
                 .OrderByDescending(x => x.CreatedDate)

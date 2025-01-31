@@ -86,7 +86,7 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.NewsHandlers.Write
                 news.MetaDescription = request.MetaDescription;
                 news.MetaKeywords = request.MetaKeywords;
                 news.CategoryId = request.CategoryId;
-                news.AuthorId = request.AuthorId;
+                news.UserId = request.UserId;
                 news.LastModifiedDate = DateTime.UtcNow;
                 news.LastModifiedByUserId = userId;
 

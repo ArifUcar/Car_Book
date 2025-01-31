@@ -12,6 +12,6 @@ namespace UdemyCarBook.Application.Features.Mediator.Commands.SocialMediaCommand
         public bool IsActive { get; set; } = true;
         public int? FollowerCount { get; set; }
         public string? AccountName { get; set; }
-        public Guid? AuthorId { get; set; }
+        public Guid? UserId { get; set; }
     }
 } 

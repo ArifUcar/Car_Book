@@ -175,10 +175,10 @@ namespace UdemyCarBook.Persistance.Repositories
                 if (permission.LastModifiedByUserId == Guid.Empty)
                     permission.LastModifiedByUserId = null;
 
-                // Mevcut rol ilişkilerini koru
+              
                 permission.Roles = existingPermission.Roles;
 
-                // Entity'nin diğer özelliklerini güncelle
+                
                 existingPermission.Name = permission.Name;
                 existingPermission.Description = permission.Description;
                 existingPermission.Group = permission.Group;

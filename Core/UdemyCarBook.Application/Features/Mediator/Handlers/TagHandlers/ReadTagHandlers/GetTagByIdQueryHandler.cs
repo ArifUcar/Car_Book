@@ -38,7 +38,7 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.TagHandlers.ReadTa
                     Title = n.Title,
                     PublishDate = n.PublishDate,
                     CategoryName = n.Category?.Name,
-                    AuthorName = n.Author?.FirstName
+                    AuthorName = n.User?.FirstName
                 }).ToList(),
                 CreatedDate = tag.CreatedDate,
                 CreatedByUserName = tag.CreatedByUser != null ? tag.CreatedByUser.UserName : null,

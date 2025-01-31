@@ -10,7 +10,7 @@ namespace UdemyCarBook.Application.Interfaces
         Task<List<News>> GetAllWithDetailsAsync();
         Task<News> GetByIdWithDetailsAsync(Guid id);
         Task<List<News>> GetNewsByCategoryAsync(Guid categoryId);
-        Task<List<News>> GetNewsByAuthorAsync(Guid authorId);
+        Task<List<News>> GetNewsByUserAsync(Guid userId);
         Task<List<News>> GetNewsByTagAsync(Guid tagId);
         Task<List<News>> SearchNewsAsync(string keyword);
         Task<List<News>> GetLatestNewsAsync(int count);

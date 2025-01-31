@@ -96,19 +96,19 @@ namespace UdemyCarBook.Application.Features.Mediator.Results.NewsResults
         public string CategoryName { get; set; }
 
         /// <summary>
-        /// Yazar ID'si
+        /// Kullanıcı ID'si
         /// </summary>
-        public Guid AuthorId { get; set; }
+        public Guid UserId { get; set; }
 
         /// <summary>
-        /// Yazar adı
+        /// Kullanıcı adı
         /// </summary>
-        public string AuthorName { get; set; }
+        public string UserName { get; set; }
 
         /// <summary>
-        /// Yazar resmi
+        /// Kullanıcı resmi
         /// </summary>
-        public string? AuthorImageUrl { get; set; }
+        public string UserImageUrl { get; set; }
 
         /// <summary>
         /// Haber durumu

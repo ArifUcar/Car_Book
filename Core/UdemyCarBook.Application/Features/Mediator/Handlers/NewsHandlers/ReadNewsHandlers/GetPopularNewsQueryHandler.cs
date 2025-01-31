@@ -29,7 +29,7 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.NewsHandlers.ReadN
                 Content = x.Content,
                 CoverImageUrl = x.CoverImageUrl,
                 CreatedDate = x.CreatedDate,
-                AuthorName = x.Author?.FullName,
+                UserName = x.User?.FullName,
                 CategoryName = x.Category?.Name,
                 ViewCount = x.ViewCount,
                 Tags = x.Tags?.Select(t => t.Name).ToList() ?? new List<string>(),

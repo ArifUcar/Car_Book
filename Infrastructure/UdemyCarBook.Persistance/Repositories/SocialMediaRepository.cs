@@ -17,7 +17,7 @@ namespace UdemyCarBook.Persistance.Repositories
         public async Task<List<SocialMedia>> GetAllWithDetailsAsync()
         {
             return await _context.SocialMedias
-                .Include(x => x.Author)
+                .Include(x => x.User)
                 .Include(x => x.CreatedByUser)
                 .Include(x => x.LastModifiedByUser)
                 .Where(x => !x.IsDeleted)
@@ -28,7 +28,7 @@ namespace UdemyCarBook.Persistance.Repositories
         public async Task<SocialMedia> GetByIdWithDetailsAsync(Guid id)
         {
             return await _context.SocialMedias
-                .Include(x => x.Author)
+                .Include(x => x.User)
                 .Include(x => x.CreatedByUser)
                 .Include(x => x.LastModifiedByUser)
                 .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
@@ -37,8 +37,8 @@ namespace UdemyCarBook.Persistance.Repositories
         public async Task<List<SocialMedia>> GetByAuthorIdAsync(Guid authorId)
         {
             return await _context.SocialMedias
-                .Include(x => x.Author)
-                .Where(x => x.AuthorId == authorId && !x.IsDeleted)
+                .Include(x => x.User)
+                .Where(x => x.UserId == authorId && !x.IsDeleted)
                 .OrderBy(x => x.DisplayOrder)
                 .ToListAsync();
         }
@@ -46,7 +46,7 @@ namespace UdemyCarBook.Persistance.Repositories
         public async Task<List<SocialMedia>> GetActiveAccountsAsync()
         {
             return await _context.SocialMedias
-                .Include(x => x.Author)
+                .Include(x => x.UserId)
                 .Where(x => !x.IsDeleted && x.IsActive)
                 .OrderBy(x => x.DisplayOrder)
                 .ToListAsync();
@@ -56,7 +56,7 @@ namespace UdemyCarBook.Persistance.Repositories
         {
             return await _context.SocialMedias
                 .AnyAsync(x => x.Platform == platform && 
-                              x.AuthorId == authorId && 
+                              x.UserId == authorId && 
                               !x.IsDeleted);
         }
     }

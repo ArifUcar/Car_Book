@@ -46,6 +46,7 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.PermissionHandlers
                 permission.LastModifiedDate = DateTime.UtcNow;
                 permission.LastModifiedByUserId = currentUser.Id;
                 permission.UpdatedByUserId = currentUser.Id;
+                
 
                 await _repository.RemoveAsync(permission);
                 await _historyService.SaveHistory(permission, "Delete");

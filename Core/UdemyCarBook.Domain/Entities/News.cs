@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using UdemyCarBook.Domain.Base;
+
 
 namespace UdemyCarBook.Domain.Entities
 {
@@ -30,17 +32,17 @@ namespace UdemyCarBook.Domain.Entities
         /// <summary>
         /// Kapak resmi URL'si
         /// </summary>
-        public string CoverImageUrl { get; set; }
+        public string? CoverImageUrl { get; set; }
 
         /// <summary>
         /// Kapak resmi dosya adı
         /// </summary>
-        public string CoverImageFileName { get; set; }
+        public string? CoverImageFileName { get; set; }
 
         /// <summary>
         /// Kapak resmi MIME tipi
         /// </summary>
-        public string CoverImageContentType { get; set; }
+        public string? CoverImageContentType { get; set; }
 
         /// <summary>
         /// Kapak resmi boyutu (byte)
@@ -110,7 +112,10 @@ namespace UdemyCarBook.Domain.Entities
         /// <summary>
         /// Yazar ID'si
         /// </summary>
-        public Guid AuthorId { get; set; }
+        public Guid UserId { get; set; }
+
+        [JsonIgnore]
+        public virtual User User { get; set; }
 
         /// <summary>
         /// Haber durumu
@@ -119,7 +124,7 @@ namespace UdemyCarBook.Domain.Entities
 
         // Navigation Properties
         public virtual Category Category { get; set; }
-        public virtual Author Author { get; set; }
+
         public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<Tag> Tags { get; set; }
 

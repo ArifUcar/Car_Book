@@ -2,12 +2,12 @@ using UdemyCarBook.Domain.Entities;
 
 namespace UdemyCarBook.Application.Interfaces
 {
-    public interface IAuthorRepository : IRepository<Author>
+    public interface IAuthorRepository : IRepository<User>
     {
-        Task<List<Author>> GetAllWithDetailsAsync();
-        Task<Author> GetByIdWithDetailsAsync(Guid id);
-        Task<List<Author>> GetActiveAuthorsAsync();
+        Task<List<User>> GetAllWithDetailsAsync();
+        Task<User> GetByIdWithDetailsAsync(Guid id);
+        Task<List<User>> GetActiveAuthorsAsync();
         Task<bool> IsEmailExistsAsync(string email);
-        Task<List<Author>> GetAuthorsByNewsCountAsync(int minNewsCount);
+        Task<List<User>> GetAuthorsByNewsCountAsync(int minNewsCount);
     }
 } 

@@ -40,9 +40,9 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.SocialMediaHandler
                 if (string.IsNullOrEmpty(request.Icon))
                     throw new AuFrameWorkException("İkon boş olamaz", "ICON_REQUIRED", "ValidationError");
 
-                if (socialMedia.Platform != request.Platform || socialMedia.AuthorId != request.AuthorId)
+                if (socialMedia.Platform != request.Platform || socialMedia.UserId != request.UserId)
                 {
-                    var isPlatformExists = await _repository.IsPlatformExistsForAuthorAsync(request.Platform, request.AuthorId);
+                    var isPlatformExists = await _repository.IsPlatformExistsForAuthorAsync(request.Platform, request.UserId);
                     if (isPlatformExists)
                         throw new AuFrameWorkException("Bu yazar için bu platform zaten eklenmiş", "PLATFORM_EXISTS", "ValidationError");
                 }
@@ -54,7 +54,7 @@ namespace UdemyCarBook.Application.Features.Mediator.Handlers.SocialMediaHandler
                 socialMedia.IsActive = request.IsActive;
                 socialMedia.FollowerCount = request.FollowerCount;
                 socialMedia.AccountName = request.AccountName;
-                socialMedia.AuthorId = request.AuthorId;
+                socialMedia.UserId = request.UserId;
                 socialMedia.LastModifiedDate = DateTime.UtcNow;
 
                 await _repository.UpdateAsync(socialMedia);
